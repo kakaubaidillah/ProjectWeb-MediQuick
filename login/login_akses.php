@@ -67,7 +67,7 @@
             $_SESSION['role'] = "pasien";
             $_SESSION['status'] = "LOGIN";
 
-            header("Location: /dasbord/user.php");
+            header("Location: ../dashboard/user.php");
             exit();
         }
     }
