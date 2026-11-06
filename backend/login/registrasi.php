@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrasi</title>
+    <title>Registrasi Akun</title>
 </head>
+
 <body>
 
-    <h2>Form Registrasi</h2>
-    <form action="regis_akses.php" method="POST">
+    <h2>Registrasi</h2>
+    <form action="access_regist.php" method="POST">
         <label>Nama:</label>
-        <input type="text" name = "name" required>
+        <input type="text" name="name" required>
         <br><br>
         <label>Email:</label>
         <input type="email" name="email" required>
@@ -18,7 +20,7 @@
         <label>Password:</label>
         <input type="password" name="pass" placeholder="password akun apotek" required>
         <br><br>
-        <label>No. Telephon:</label>
+        <label>No. Telephone:</label>
         <input type="tel" name="tlp" placeholder="08..." required>
         <br><br>
         <label>Tanggal Lahir:</label>
@@ -38,4 +40,5 @@
         <input type="submit" value="Buat Akun">
     </form>
 </body>
+
 </html>
