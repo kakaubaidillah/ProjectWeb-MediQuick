@@ -12,7 +12,7 @@
         <script>alert("Login Gagal")</script>
     <?php } ?>
 
-    <form action = "login_akses.php" method="POST">
+    <form action = "access_login.php" method="POST">
         Email:
         <input type="email" name = "email" required>
         <br>
