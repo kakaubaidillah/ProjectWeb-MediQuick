@@ -1,7 +1,7 @@
 <?php
     // session_start();
 
-    include __DIR__ . "\..\connection.php";
+    include __DIR__ . "/../connection.php";
 
     $nama     = $_POST['nama'];
     $email    = $_POST['email'];
