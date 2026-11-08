@@ -46,6 +46,7 @@
             $_SESSION['notelp'] = $datauser['no_telp'];
             $_SESSION['date'] = $datauser['tanggal_lahir'];
             $_SESSION['gender'] = $datauser['jenis_kelamin'];
+            $_SESSION['role'] = "pasien";
             $_SESSION['status'] = "LOGIN";
 
             header("location: ../dashboard/user.php?pesan=loginsuccess");
