@@ -9,22 +9,22 @@
     $query = mysqli_query($conn, $sql);
 
     
-    $dataadmin = mysqli_fetch_assoc($query);
-    
-    if($dataadmin) {
-        if($pass == $dataadmin['password']) {
-            $_SESSION['id'] = $dataadmin['id_admin'];
-            $_SESSION['nama'] = $dataadmin['nama'];
-            $_SESSION['email'] = $dataadmin['email'];
-            $_SESSION['notelp'] = $dataadmin['no_telp'];
-            $_SESSION['role'] = $dataadmin['role'];
+    $data = mysqli_fetch_assoc($query);
+    //cek data 
+    if($data) {
+        if($pass == $data['password']) {
+            $_SESSION['id'] = $data['id_admin'];
+            $_SESSION['nama'] = $data['nama'];
+            $_SESSION['email'] = $data['email'];
+            $_SESSION['notelp'] = $data['no_telp'];
+            $_SESSION['role'] = $data['role'];
             $_SESSION['status'] = "Login";
 
-            if($dataadmin['role'] == "admin") {
+            if($data['role'] == "admin") {
                 header("location: .../dashboard/admin/dashboard_admin.php");
-            } else if($dataadmin['role'] == "dokter") {
+            } else if($data['role'] == "dokter") {
                 header("location: .../dashboard/admin/dashboard_dokter.php");
-            } else if($dataadmin['role'] == "apoteker") {
+            } else if($data['role'] == "apoteker") {
                 header("location: .../dashboard/admin/dashboard_apoteker.php");
             }
             exit();
@@ -36,16 +36,16 @@
     $sql = "SELECT * FROM pasien WHERE email = '$user'";
     $query = mysqli_query($conn, $sql);
 
-    $datapasien = mysqli_fetch_assoc($query);
+    $datauser = mysqli_fetch_assoc($query);
 
-    if($datapasien) {
-        if($pass == $datapasien['password']) {
-            $_SESSION['id'] = $datapasien['id_pasien'];
-            $_SESSION['nama'] = $datapasien['nama'];
-            $_SESSION['email'] = $datapasien['email'];
-            $_SESSION['notelp'] = $datapasien['no_telp'];
-            $_SESSION['date'] = $datapasien['tanggal_lahir'];
-            $_SESSION['gender'] = $datapasien['jenis_kelamin'];
+    if($datauser) {
+        if($pass == $datauser['password']) {
+            $_SESSION['id'] = $datauser['id_pasien'];
+            $_SESSION['nama'] = $datauser['nama'];
+            $_SESSION['email'] = $datauser['email'];
+            $_SESSION['notelp'] = $datauser['no_telp'];
+            $_SESSION['date'] = $datauser['tanggal_lahir'];
+            $_SESSION['gender'] = $datauser['jenis_kelamin'];
             $_SESSION['status'] = "LOGIN";
 
             header("location: ../dashboard/user.php?pesan=loginsuccess");
@@ -56,5 +56,5 @@
         }
     }
 
-    header("location: ..\login.php?pesan=failed")
+    header("location: login.php?pesan=failed")
 ?>

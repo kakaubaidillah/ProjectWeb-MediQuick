@@ -8,6 +8,24 @@
 </head>
 
 <body>
+    <div class="container">
+        <div clas="form-container" id="registform">
+            <form action="access_regist.php" method="POST">
+                <h2>REGISTRASI</h2>
+                <input type="text" name="name" for="" required placeholder="Nama Lengkap">
+                <input type="email" name="email" for="" required placeholder="example@gmail.com">
+                <input type="password" name="pass" for="" required placeholder="Password">
+                <input type="tel" name="tlp" for="" required placeholder="+62">
+                <input type="date" name="date" for="" required>
+                <input type="" name="" id="">
+            </form>
+        </div>
+    </div>
+
+
+
+
+
 
     <h2>Registrasi</h2>
     <form action="access_regist.php" method="POST">
