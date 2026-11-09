@@ -15,6 +15,7 @@ body {
     min-height: 100vh;
     background-repeat: no-repeat;
     background-size: cover;
+    
     /* background: linear-gradient(to right, whitesmoke, lightgrey); */
     color: #333
 }
@@ -81,6 +82,12 @@ h2 {
     font-weight: 650;
     /* transition: 0.5s; */
     cursor: pointer;
+}
+
+p.existed-email {
+    text-align: left;
+    font-size: 12px;
+    color: #F2421F;
 }
 
 p {

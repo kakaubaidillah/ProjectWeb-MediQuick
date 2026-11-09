@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(isset($_SESSION['register-error'])) {
+    $registerror = $_SESSION['register-error'];
+    unset($_SESSION['register-error']);
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,18 +23,29 @@
         <h2>REGISTRASI</h2>
         <form action="access_regist.php" method="POST">
             <div class="form-ketik">
+                <!-- Nama -->
                 <label>Nama</label><br>
                 <input type="text" name="name" placeholder="Nama Lengkap" required><br>
+                <!-- Email -->
                 <label>Email</label><br>
                 <input type="email" name="email" placeholder="Email" required><br>
+                <?php if(!empty($registerror)) { ?>
+                    <p class="existed-email">
+                        <?= $registerror ?>
+                    </p>
+                <?php } ?>
+                <!-- Password -->
                 <label>Password</label><br>
                 <input type="password" name="pass" placeholder="password" required><br>
+                <!-- Nomor Telepon -->
                 <label>Nomor Telepon</label><br>
                 <input type="tel" name="tlp" placeholder="08xxxxxxxxx" required><br>
+                <!-- Tanggal Lahir -->
                 <label>Tanggal Lahir</label><br>
                 <input type="date" name="date" required><br>
             </div>
             <div class="form-gender">
+                <!-- Gender -->
                 <label class="gender-title">Gender</label>
                 <label class="gender-cat" for="male">
                     <input type="radio" name="gender" id="male" value="Laki-laki">
@@ -38,15 +58,24 @@
             </div>
             <button type="submit" class="form-btn" id="regist-btn" name="login">Daftar</button>
         </form>
+        <p>Sudah punya akun? <a href="login.php" id="tologin-btn" style="color: blue; text-decoration: none;">Login</a></p>
     </div>
     <script>
         const registbtn = document.getElementById('regist-btn');
+        const tologinbtn = document.getElementById('tologin-btn');
 
-        registbtn.onmouseover = () => {
+        registbtn.onmouseover =()=> {
             registbtn.style.backgroundColor = "#0D75DE";
         }
-        registbtn.onmouseout = () => {
+        registbtn.onmouseout =()=> {
             registbtn.style.backgroundColor = "#2791F5";
+        }
+
+        tologinbtn.onmouseover =()=> {
+            tologinbtn.style.textDecoration = "underline";
+        }
+        tologinbtn.onmouseout =()=> {
+            tologinbtn.style.textDecoration = "none"
         }
     </script>
     <!-- <h2>Registrasi</h2>

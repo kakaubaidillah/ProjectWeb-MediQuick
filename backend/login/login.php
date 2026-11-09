@@ -20,32 +20,32 @@
     <div class="form-container" id="loginform">
         <h2>LOGIN</h2>
         <form action="access_login.php" method="POST">
-        <div class="form-ketik">
-            <label><i class="bi bi-envelope-at-fill"></i> Email </label><br>
-            <input type="text" name="email" placeholder="Masukkan email anda"><br>
-            <label><i class="bi bi-lock-fill"></i> Password </label><br>
-            <input type="password" name="" placeholder="password"><br>
-        </div>
-        <button type="submit" class="form-btn" id="login-btn" value="login">LOGIN</button>
+            <div class="form-ketik">
+                <label><i class="bi bi-envelope-at-fill"></i> Email </label><br>
+                <input type="text" name="email" placeholder="Masukkan email anda"><br>
+                <label><i class="bi bi-lock-fill"></i> Password </label><br>
+                <input type="password" name="pass" placeholder="password"><br>
+            </div>
+            <button type="submit" class="form-btn" id="login-btn" value="login">LOGIN</button>
         </form>
         <p>Belum punya akun? <a href="registrasi.php" id="toregistpage-btn" style="color: blue; text-decoration: none">Daftar</a></p>
     </div>
     <script>
         const loginbtn = document.getElementById('login-btn');
-        const daftarbtn = document.getElementById('toregistpage-btn')
+        const todaftarbtn = document.getElementById('toregistpage-btn')
 
-        loginbtn.onmouseover = () => {
+        loginbtn.onmouseover =()=> {
             loginbtn.style.backgroundColor = "#0D75DE";
         }
-        loginbtn.onmouseout = () => {
+        loginbtn.onmouseout =()=> {
             loginbtn.style.backgroundColor = "#2791F5";
         }
 
-        daftarbtn.onmouseover = () => {
-            daftarbtn.style.textDecoration = "underline";
+        todaftarbtn.onmouseover =()=> {
+            todaftarbtn.style.textDecoration = "underline";
         }
-        daftarbtn.onmouseout = () => {
-            daftarbtn.style.textDecoration = "none";
+        todaftarbtn.onmouseout =()=> {
+            todaftarbtn.style.textDecoration = "none";
         }
     </script>
 </body>
