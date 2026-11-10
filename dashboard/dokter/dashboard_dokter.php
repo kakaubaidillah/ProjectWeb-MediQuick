@@ -1,8 +1,6 @@
-<<<<<<< Updated upstream
-=======
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "../../../backend/connection.php";
 
 $sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
 
@@ -103,4 +101,5 @@ $jumlah = mysqli_num_rows($data);
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
->>>>>>> Stashed changes
+
+
