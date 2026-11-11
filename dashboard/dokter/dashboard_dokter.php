@@ -2,9 +2,12 @@
 session_start();
 include __DIR__ . "../../../backend/connection.php";
 
-$sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
+$id = $_POST['id'];
 
-$data = mysqli_query($conn, $sql_form);
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id' AND status = 'Menunggu'";
+$sql_pasien = "SELECT * FROM pasien WHERE id_pasien = '$id'";
+
+$data = mysqli_query($conn, $sql_konsultasi);
 
 $jumlah = mysqli_num_rows($data);
 
@@ -61,30 +64,28 @@ $jumlah = mysqli_num_rows($data);
     </nav>
 
     <div class="container" style="margin-top: 50px;">
-        <h2>Dashboard Admin</h2>
-        <p>Kelola Informasi dan Konten MediQuick</p>
+        <h2>Dashboard Dokter</h2>
+        <p>Kelola Konsultasi Pasien</p>
     </div>
     <hr>
 
     <div class="d-flex justify-content-between align-items-center mx-5">
-        <h3>Konten Dashboard</h3>
-        <?php if($jumlah < 3) { ?>
-        <a href="konten_tambah.php"><button class="btn btn-primary"><i class="bi bi-plus-circle"> Tambah Konten</i></button></a>
-        <?php } ?>
+        <h3>Daftar Konsultasi Pasien</h3>
+        <br>
     </div>
 
     <div class="row">
         <?php while($row = mysqli_fetch_assoc($data)) {?>
         <div class="col-md-6 col-lg-4 mx-auto">
-            <div class="card h-100 shadow-sm">
-                <img>
+            <div class="card h-80 shadow-sm">
                 <div class="card-body">
-                    <h4><?php echo $row['judul']; ?></h4>
-                    <p><?php echo $row['deskripsi']; ?></p>
+                    <p>Gejala: <?php echo $row['gejala']; ?></p>
+                    <p>Status:<?php echo $row['status']; ?></p>
+                    <p>tanggal konsultasi:<?php echo $row['tanggal_konsultasi']; ?></p>
                 </div>
                 <div class="card-footer">
-                    <a href="konten_edit.php?id=<?php echo $row['id_konten'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
-                    <a href="/../../backend/hapus_konten.php?id=<?php echo $row['id_konten']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
+                    <a href="konten_edit.php?id=<?php echo $row['id_konsultasi'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
+                    <a href="/../../backend/hapus_konsultasi.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>
         </div>
@@ -92,11 +93,10 @@ $jumlah = mysqli_num_rows($data);
 
         <?php if($jumlah == 0) {?>
             <div class="col-12">
-                <div class="alert alert-info">Belum ada konten dashboard</div>
+                <div class="alert alert-info">Belum ada Konsultasi Masuk</div>
             </div>
         <?php } ?>
     </div>
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
