@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
     $hostname = "localhost";
     $username = "root";
@@ -9,4 +10,8 @@
     if(!$conn) {
         die(mysqli_connect_error());
     }
+=======
+<?php 
+$conn = mysqli_connect("localhost", "root", "", "mediquick");
+>>>>>>> origin/kaUhuyy
 ?>

@@ -1,5 +1,11 @@
 <?php
 session_start();
+include __DIR__ ."/../../backend/connection.php";
+$id = $_GET['id'];
+
+$sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
+$data = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($data);
 
 ?>
 <!DOCTYPE html>
@@ -52,13 +58,10 @@ session_start();
                         <a class="nav-link" href="#">Profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
+                        <a class="nav-link" href="konsultasi.php?id=<?php echo $row['id_pasien']; ?>">Konsultasi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="../backend/auth/logout.php" onclick="return confirm('LogOut?')">LOGOUT</a>
+                        <a class="nav-link" href="riwayat_konsultasi.php?id=<?php echo $row['id_pasien'] ?>">Riwayat Konsultasi</a>
                     </li>
                 </ul>
             </div>
@@ -75,21 +78,21 @@ session_start();
         <div class="row g-3" style="max-width: 800px;">
             <div class="col-12 col-md-4">
                 <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../asset/img/images.jpg" alt="picture 1" class="flexx-shrink-0" style="max-width: 100px;">
+                    <img src="../../asset/img/images.jpg" alt="picture 1" class="flexx-shrink-0" style="max-width: 100px;">
                     <h5>Capture your thoughts, one note at a time.</h5>
                     <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
                 </div>
             </div>
             <div class="col-12 col-md-4">
                 <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../asset/img/images(1).jpg" alt="picture 2" class="flexx-shrink-0" style="max-width: 100px;">
+                    <img src="../../asset/img/images(1).jpg" alt="picture 2" class="flexx-shrink-0" style="max-width: 100px;">
                     <h5>Capture your thoughts, one note at a time.</h5>
                     <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
                 </div>
             </div>
             <div class="col-12 col-md-4">
                 <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../asset/img/images(2).jpg" alt="picture 3" class="flexx-shrink-0" style="max-width: 100px;">
+                    <img src="../../asset/img/images(2).jpg" alt="picture 3" class="flexx-shrink-0" style="max-width: 100px;">
                     <h5>Capture your thoughts, one note at a time.</h5>
                     <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
                 </div>
