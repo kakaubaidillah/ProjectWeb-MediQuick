@@ -1,11 +1,11 @@
 <?php
 session_start();
-include __DIR__ . "../../../backend/connection.php";
+include __DIR__ . "/../../backend/connection.php";
 
-$id = $_POST['id'];
+$id_dokter = $_GET['id'];
 
-$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id' AND status = 'Menunggu'";
-$sql_pasien = "SELECT * FROM pasien WHERE id_pasien = '$id'";
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE status = 'Menunggu'";
+
 
 $data = mysqli_query($conn, $sql_konsultasi);
 
@@ -74,17 +74,23 @@ $jumlah = mysqli_num_rows($data);
         <br>
     </div>
 
-    <div class="row">
-        <?php while($row = mysqli_fetch_assoc($data)) {?>
+    <div class="row g-3">
+        <?php while($row = mysqli_fetch_assoc($data)) {
+            $id_pasien = $row['id_pasien'];
+            $sql_pasien = "SELECT * FROM pasien WHERE id_pasien = '$id_pasien'";
+            $data_pasien = mysqli_query($conn, $sql_pasien);
+            $pasien = mysqli_fetch_assoc($data_pasien);
+        ?>
         <div class="col-md-6 col-lg-4 mx-auto">
-            <div class="card h-80 shadow-sm">
+            <div class="card h-100 w-75 shadow-sm">
                 <div class="card-body">
-                    <p>Gejala: <?php echo $row['gejala']; ?></p>
-                    <p>Status:<?php echo $row['status']; ?></p>
-                    <p>tanggal konsultasi:<?php echo $row['tanggal_konsultasi']; ?></p>
+                    <p>Nama:<br><?php echo $pasien['nama'] ?></p>
+                    <p>Gejala:<br><?php echo $row['gejala']; ?></p>
+                    <p>tanggal konsultasi:<br><?php echo $row['tanggal_konsultasi']; ?></p>
+                    <p>status:<br><?php echo $row['status']; ?></p>
                 </div>
                 <div class="card-footer">
-                    <a href="konten_edit.php?id=<?php echo $row['id_konsultasi'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
+                    <a href="konsultasi_pasien.php?id=<?php echo $row['id_konsultasi'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
                     <a href="/../../backend/hapus_konsultasi.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>

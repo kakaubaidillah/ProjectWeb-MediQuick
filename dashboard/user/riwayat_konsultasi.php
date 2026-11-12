@@ -13,7 +13,7 @@ $row = mysqli_fetch_assoc($data);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User</title>
+    <title>MEDIQUICK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .description-box{
@@ -70,8 +70,7 @@ $row = mysqli_fetch_assoc($data);
     </nav>
 
     <div class="container" style="margin-top: 100px;">
-        <h1 class="text-center mb-5">WELCOME!</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sequi sunt molestias ipsa itaque praesentium adipisci hic libero eligendi accusamus numquam officia eum recusandae veritatis modi, iure repellendus explicabo dolor.</p>
+        <h1 class="text-center mb-5">Riwayat Konsultasi</h1>
     </div>
 
     <div class="container my-4" style="max-width: 900px;">
