@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,6 +56,9 @@ session_start();
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Payment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../backend/auth/logout.php" onclick="return confirm('LogOut?')">LOGOUT</a>
                     </li>
                 </ul>
             </div>

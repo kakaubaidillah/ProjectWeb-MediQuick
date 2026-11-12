@@ -21,6 +21,11 @@ if(isset($_SESSION['register-error'])) {
 
     <div class="form-container" id="registform">
         <h2>REGISTRASI</h2>
+        <?php if(!empty($registerror)) { ?>
+            <p class="existed-email">
+                <?= $registerror ?>
+            </p>
+        <?php } ?>
         <form action="access_regist.php" method="POST">
             <div class="form-ketik">
                 <!-- Nama -->
@@ -29,11 +34,6 @@ if(isset($_SESSION['register-error'])) {
                 <!-- Email -->
                 <label>Email</label><br>
                 <input type="email" name="email" placeholder="Email" required><br>
-                <?php if(!empty($registerror)) { ?>
-                    <p class="existed-email">
-                        <?= $registerror ?>
-                    </p>
-                <?php } ?>
                 <!-- Password -->
                 <label>Password</label><br>
                 <input type="password" name="pass" placeholder="password" required><br>
@@ -56,7 +56,7 @@ if(isset($_SESSION['register-error'])) {
                     Wanita
                 </label><br>
             </div>
-            <button type="submit" class="form-btn" id="regist-btn" name="login">Daftar</button>
+            <button type="submit" class="form-btn" id="regist-btn" name="registrasi">Daftar</button>
         </form>
         <p>Sudah punya akun? <a href="login.php" id="tologin-btn" style="color: blue; text-decoration: none;">Login</a></p>
     </div>

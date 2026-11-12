@@ -26,7 +26,7 @@
                 <label><i class="bi bi-lock-fill"></i> Password </label><br>
                 <input type="password" name="pass" placeholder="password"><br>
             </div>
-            <button type="submit" class="form-btn" id="login-btn" value="login">LOGIN</button>
+            <button type="submit" class="form-btn" id="login-btn" name="login">LOGIN</button>
         </form>
         <p>Belum punya akun? <a href="registrasi.php" id="toregistpage-btn" style="color: blue; text-decoration: none">Daftar</a></p>
     </div>
