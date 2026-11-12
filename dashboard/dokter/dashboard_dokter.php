@@ -57,6 +57,9 @@ $jumlah = mysqli_num_rows($data);
                     <li class="nav-item">
                         <a class="nav-link" href="#">Payment</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                    </li>
                 </ul>
             </div>
           </div>

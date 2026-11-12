@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    include __DIR__ . "/../connection.php";
+    include __DIR__ . "/connection.php";
 
     if(isset($_POST['registrasi'])) {
         $nama     = $_POST['name'];
@@ -18,7 +18,7 @@
     $querycheck = mysqli_query($conn, $sqlcheck);
     if(mysqli_num_rows($querycheck) > 0) {
         $_SESSION['register-error'] = "Email Telah Terdaftar";
-        header("location: registrasi.php");
+        header("location: ../auth/registrasi.php");
         exit();
     }
 

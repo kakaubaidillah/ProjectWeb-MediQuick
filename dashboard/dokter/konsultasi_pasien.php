@@ -50,7 +50,7 @@ $dokter = mysqli_fetch_assoc($data_dokter);
             </tbody>
         </table>
         <hr>
-        <form action="#" method="POST">
+        <form action="konsul_pasien.php" method="POST">
             <input type="hidden" name="id" value="<?php echo $id ?>">
             <label>Diagnosis</label>
             <input type="text" name="diagnosa" id="diagnosa" class="form-control" required>

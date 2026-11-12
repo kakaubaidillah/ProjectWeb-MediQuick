@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../asset/css/formStyle.css">
+    <link rel="stylesheet" href="../asset/css/formStyle.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>LOGIN</title>
 </head>
@@ -19,7 +19,7 @@
     <?php } ?>
     <div class="form-container" id="loginform">
         <h2>LOGIN</h2>
-        <form action="access_login.php" method="POST">
+        <form action="../backend/access_login.php" method="POST">
             <div class="form-ketik">
                 <label><i class="bi bi-envelope-at-fill"></i> Email </label><br>
                 <input type="text" name="email" placeholder="Masukkan email anda"><br>

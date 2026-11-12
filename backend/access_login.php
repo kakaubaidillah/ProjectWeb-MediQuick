@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../connection.php";
+include __DIR__ . "/connection.php";
 
 if(isset($_POST['login'])) {
     $user = $_POST['email'];
@@ -25,11 +25,11 @@ if($data) {
         $idadmin = $_SESSION['id'];
 
         if($data['role'] == "admin") {
-            header("location: ../../dashboard/admin/dashboard_admin.php?id=$idadmin");
+            header("location: ../dashboard/admin/dashboard_admin.php?id=$idadmin");
         } else if($data['role'] == "dokter") {
-            header("location: ../../dashboard/admin/dashboard_dokter.php?id=$idadmin");
+            header("location: ../dashboard/dokter/dashboard_dokter.php?id=$idadmin");
         } else if($data['role'] == "apoteker") {
-            header("location: ../../dashboard/admin/dashboard_apoteker.php?id=$idadmin");
+            header("location: ../dashboard/apoteker/dashboard_apoteker.php?id=$idadmin");
         }
         exit();
     } else {
@@ -53,11 +53,13 @@ if($datauser) {
         $_SESSION['gender'] = $datauser['jenis_kelamin'];
         $_SESSION['role'] = "pasien";
         $_SESSION['status'] = "Login";
+
         $uid = $_SESSION['id'];
-        header("location: ../../dashboard/user.php?id=$uid");
+
+        header("location: ../dashboard/user/user.php?id=$uid");
         exit();
     } else {
-        
+        //NOTE: SALAH LOCATION
         // header("location: login.php?pesan=failed");
     }
 }

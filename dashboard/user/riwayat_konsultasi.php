@@ -63,6 +63,9 @@ $row = mysqli_fetch_assoc($data);
                     <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat Konsultasi</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                    </li>
                 </ul>
             </div>
           </div>

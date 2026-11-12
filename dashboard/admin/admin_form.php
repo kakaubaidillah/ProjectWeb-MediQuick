@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "../../../backend/connection.php";
+include __DIR__ . "/../../backend/connection.php";
 
 $sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
 
@@ -55,6 +55,9 @@ $jumlah = mysqli_num_rows($data);
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Payment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                     </li>
                 </ul>
             </div>
