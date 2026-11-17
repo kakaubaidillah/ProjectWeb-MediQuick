@@ -52,7 +52,7 @@ $jumlah = mysqli_num_rows($data);
                         <a class="nav-link" href="#">Profil</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
+                        <a class="nav-link" href="rk_dokter.php?id=<?php echo $id_dokter ?>">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Payment</a>
