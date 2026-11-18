@@ -4,8 +4,14 @@ include __DIR__ ."/../../backend/connection.php";
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
-$data = mysqli_query($conn, $sql);
-$row = mysqli_fetch_assoc($data);
+$data_pasien = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($data_pasien);
+
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id'";
+
+$data_konsul = mysqli_query($conn, $sql_konsultasi);
+
+$jumlah = mysqli_num_rows($data_konsul);
 
 ?>
 <!DOCTYPE html>
@@ -15,16 +21,6 @@ $row = mysqli_fetch_assoc($data);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MEDIQUICK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .description-box{
-            background-color: whitesmoke;
-            color:black;
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .description-box p {font-size: 0.8rem; margin-bottom: 0;}
-    </style>
 </head>
 
 <body>
@@ -69,47 +65,49 @@ $row = mysqli_fetch_assoc($data);
         </div> 
     </nav>
 
-    <div class="container" style="margin-top: 100px;">
-        <h1 class="text-center mb-5">Riwayat Konsultasi</h1>
+    <div class="container" style="margin-top: 20px;">
+        <h2>Riwayat Konsultasi Pasien</h2>
     </div>
+    <hr>
 
-    <div class="container my-4" style="max-width: 900px;">
-        <div class="row g-3" style="max-width: 800px;">
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images.jpg" alt="picture 1" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
+    <div class="container mt-3">
+        <div class="d-flex flex-column g-3">
+            <?php while($konsul = mysqli_fetch_assoc($data_konsul)) {?>
+            <div class="card shadow-sm" style="max-width: 850px;">
+                <a href="riwayat.php?id=<?php echo $konsul['id_konsultasi'] ?>" class="text-decoration-none text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">
+                                ID Konsultasi
+                            </h6>
+                            <h5>
+                                <?php echo $konsul['id_konsultasi']; ?>
+                            </h5>
+                            <p class="mb-0">
+                                Nama Pasien: 
+                                <strong><?php echo $row['nama']; ?></strong>
+                            </p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning text-dark">
+                                <?php echo $konsul['status']; ?>
+                            </span>
+                        </div>
+                    </div>
                 </div>
+                </a>
             </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images(1).jpg" alt="picture 2" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
+            <?php } ?>
+
+            <?php if($jumlah == 0) {?>
+                <div class="col-12">
+                    <div class="alert alert-info">Belum ada Konsultasi Masuk</div>
                 </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images(2).jpg" alt="picture 3" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
-    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function hoverOn(el) {
-            el.style.backgroundColor = "#4fb0f0";
-            el.style.color = "white";
-        }
-        function hoverOff(el) {
-            el.style.backgroundColor = "whitesmoke";
-            el.style.color = "black";
-        }
-    </script>
 </body>
 </html>
