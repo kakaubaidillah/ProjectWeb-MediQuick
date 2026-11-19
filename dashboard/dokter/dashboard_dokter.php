@@ -2,7 +2,7 @@
 session_start();
 include __DIR__ . "/../../backend/connection.php";
 
-$id_dokter = $_GET['id'];
+$id_dokter = $_SESSION['id'];
 
 $sql_konsultasi = "SELECT * FROM konsultasi WHERE status = 'Menunggu'";
 

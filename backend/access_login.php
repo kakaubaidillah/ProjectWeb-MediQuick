@@ -21,19 +21,17 @@ if($data) {
         $_SESSION['notelp'] = $data['no_telp'];
         $_SESSION['role'] = $data['role'];
         $_SESSION['status'] = "Login";
-        
-        $idadmin = $_SESSION['id'];
 
         if($data['role'] == "admin") {
-            header("location: ../dashboard/admin/dashboard_admin.php?id=$idadmin");
+            header("location: ../dashboard/admin/dashboard_admin.php");
         } else if($data['role'] == "dokter") {
-            header("location: ../dashboard/dokter/dashboard_dokter.php?id=$idadmin");
+            header("location: ../dashboard/dokter/dashboard_dokter.php");
         } else if($data['role'] == "apoteker") {
-            header("location: ../dashboard/apoteker/dashboard_apoteker.php?id=$idadmin");
+            header("location: ../dashboard/apoteker/dashboard_apoteker.php");
         }
         exit();
     } else {
-        echo "PASSWORD SALAH";
+        header("location: ../auth/login.php?pesan=failed");
     }
 }
 
@@ -59,10 +57,9 @@ if($datauser) {
         header("location: ../dashboard/user/user.php?id=$uid");
         exit();
     } else {
-        //NOTE: SALAH LOCATION
-        // header("location: login.php?pesan=failed");
+        header("location: ../auth/login.php?pesan=failed");
     }
 }
 
-header("location: login.php?pesan=failed")
+header("location: ../auth/login.php?pesan=failed");
 ?>
