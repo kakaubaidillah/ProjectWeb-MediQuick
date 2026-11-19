@@ -49,6 +49,11 @@ $dokter = mysqli_fetch_assoc($data_dokter);
                 </tr>
             </tbody>
         </table>
+        <div>
+            <?php if(!empty($konsul['gambar'])) {?>
+                <img src="../../asset/img/<?= $konsul['gambar']; ?>" alt="Foto Kondisi" class="img-top" style="height: 180px; object-fit: cover;">
+            <?php } ?>
+        </div>
         <hr>
         <form action="konsul_pasien.php" method="POST">
             <input type="hidden" name="id" value="<?php echo $id ?>">

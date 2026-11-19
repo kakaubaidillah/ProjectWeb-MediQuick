@@ -11,7 +11,7 @@
 
     <div class="container mt-5">
         <h5>Tambah Konten Dasbord</h5>
-        <form action="/../../backend/create_konten.php" method="POST">
+        <form action="../../backend/create_konten.php" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Judul</label>
                 <input id="judul" type="text" name="judul" class="form-control" required>
@@ -22,7 +22,7 @@
             </div>
             <div class="mb-3">
                 <label class="form-label">Gambar</label>
-                <input id="gambar" type="file" name="gambar" class="form-control" accept="image/jpeg,image/png,image/webp" required>
+                <input id="gambar" type="file" name="images" class="form-control" required>
             </div>
             <button class="btn btn-primary mt-3" type="submit" name="simpan">Simpan</button>
             <a href="admin_form.php" class="btn btn-secondary mt-3">Kembali</a>

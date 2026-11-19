@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "../../../backend/connection.php";
+include __DIR__ . "/../../backend/connection.php";
 
 $sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
 
@@ -79,7 +79,7 @@ $jumlah = mysqli_num_rows($data);
         <?php while($row = mysqli_fetch_assoc($data)) {?>
         <div class="col-md-6 col-lg-4 mx-auto">
             <div class="card h-100 shadow-sm">
-                <img>
+                <img src="../../asset/img/<?= $row['gambar']; ?>" class="card-img-top" alt="content image" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                     <h4><?php echo $row['judul']; ?></h4>
                     <p><?php echo $row['deskripsi']; ?></p>

@@ -1,15 +1,15 @@
 <?php 
 session_start();
 
-include "/connection.php";
-/** @var mysqli $conn */
+include __DIR__. "/connection.php";
+
 
 $judul = $_POST['judul'];
 $deskripsi = $_POST['deskripsi'];
 //ambil gambar
-$namaGambar = $_FILES['gambar']['name'];
+$namaGambar = $_FILES['images']['name'];
 $namaBaru = time(). "_". basename($namaGambar);
-$gambar = "/../asset/img/" . $namaBaru; 
+$tmp = $_FILES['images']['tmp_name'];
 
 $sql_cek_status = "SELECT COUNT(*) AS jumlah FROM konten_dashboard WHERE status = 1";
 
@@ -21,14 +21,24 @@ if($hasil['jumlah'] >= 3){
     header("Location: /../dashboard/admin/admin_form.php");
 }
 
-$sql_insert = "INSERT INTO konten_dashboard
+$location = __DIR__."/../asset/img/". $namaBaru;
+
+if(move_uploaded_file($tmp, $location)){
+    $sql_insert = "INSERT INTO konten_dashboard
                 (judul, deskripsi, gambar)
-                VALUES ($judul, $deskripsi, $gambar)";
+                VALUES ('$judul', '$deskripsi', '$namaBaru')";
+    $query = mysqli_query($conn, $sql_insert);
 
-mysqli_query($conn, $sql_insert);
+    if($query){
+        header("Location: ../dashboard/admin/admin_form.php");
+        exit();
+    }else{
+        echo "Gagal Menyimpan Data:". mysqli_error($conn);
+    }
+}else{
+    echo "Gagal Menyimpan Gambar";
+}
 
-header("Location: /../dashboard/admin/admin_form.php");
-exit();
 
 
 ?>

@@ -4,7 +4,7 @@ include __DIR__ . "/../../backend/connection.php";
 
 $id_dokter = $_GET['id'];
 
-$sql_konsultasi = "SELECT * FROM konsultasi WHERE status != 'Menunggu'";
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE status != 'Menunggu' ORDER BY tanggal_konsultasi DESC";
 
 $data = mysqli_query($conn, $sql_konsultasi);
 

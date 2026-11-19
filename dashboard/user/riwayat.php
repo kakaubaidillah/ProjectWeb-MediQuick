@@ -50,21 +50,21 @@ $pasien = mysqli_fetch_assoc($data_pasien);
                             <h3>Nama: <?php echo $pasien['nama']; ?></h3>
                         </div>
                         <div class="btn-group mb-3" role="group" aria-label="Color selection">
-                                <label class="btn" style="
-                                                    background-color:#4fb0f0;
-                                                    outline: #4fb0f0 solid;
-                                                    color: white;">
-                                Status</label>
-                                <label class="btn" style="
-                                                    background-color: white;
-                                                    outline: #4fb0f0 solid;">
-                                <?php echo $row['status']; ?>
-                                </label>
-                            </div>
-                            <hr>
-                            <div>
-                                <h4 class="mb-2">Diagnosis: <?php echo $row['diagnosis']; ?></h4>
-                                <pre class="mb-4" style="white-space:pre-wrap; font-size: 18px;">Catatan: <?php echo $row['catatan_dokter']; ?></pre>
+                            <label class="btn" style="
+                                                background-color:#4fb0f0;
+                                                outline: #4fb0f0 solid;
+                                                color: white;">
+                            Status</label>
+                            <label class="btn" style="
+                                                background-color: white;
+                                                outline: #4fb0f0 solid;">
+                            <?php echo $row['status']; ?>
+                            </label>
+                        </div>
+                        <hr>
+                        <div>
+                            <h4 class="mb-2">Diagnosis: <?php echo $row['diagnosis']; ?></h4>
+                            <pre class="mb-4" style="white-space:pre-wrap; font-size: 18px;">Catatan: <?php echo $row['catatan_dokter']; ?></pre>
                         </div>
                     </div>
                 </div>

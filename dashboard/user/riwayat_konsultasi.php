@@ -7,7 +7,7 @@ $sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
 $data_pasien = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($data_pasien);
 
-$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id'";
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id' ORDER BY tanggal_konsultasi DESC";
 
 $data_konsul = mysqli_query($conn, $sql_konsultasi);
 

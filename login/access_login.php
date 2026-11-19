@@ -23,7 +23,7 @@
             $idlogin = $_SESSION['id'];
 
             if($data['role'] == "admin") {
-                header("location: ../dashboard/admin/dashboard_admin.php?id=$idlogin");
+                header("location: ../dashboard/admin/admin_form.php?id=$idlogin");
             } else if($data['role'] == "dokter") {
                 header("location: ../dashboard/dokter/dashboard_dokter.php?id=$idlogin");
             } else if($data['role'] == "apoteker") {

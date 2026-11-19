@@ -33,7 +33,11 @@ $id = $_GET['id'];
                 <label class="form-label">Sejak kapan</label>
                 <input id="mulai_gejala" type="date" name="mulai_gejala" class="form-control" required>
             </div>
-            <button class="btn btn-primary mt-3" type="submit" name="simpan">Kirim</button>
+            <div class="mb-3">
+                <label class="form-label">Gambar (Opsional)</label>
+                <input id="images" type="file" name="images" class="form-control">
+            </div>
+            <button class="btn btn-primary mt-3" type="submit" name="kirim">Kirim</button>
             <a href="user.php?id=<?php echo $id ?>" class="btn btn-secondary mt-3">Batal</a>
         </form>
     </div>
