@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include __DIR__. "/../../backend/connection.php";
+include __DIR__. "/../../../config/connection.php";
 
 $id = $_POST['id'];
 
@@ -14,7 +14,7 @@ $konsul = mysqli_query($conn, "UPDATE konsultasi SET
                                 WHERE id_konsultasi = '$id'");
 
 if($konsul){
-    header("Location: dashboard_dokter.php?id=$id_dokter");
+    header("Location: ../dashboard_dokter.php?id=$id_dokter");
     exit();
 }
 

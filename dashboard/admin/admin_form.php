@@ -1,6 +1,10 @@
 <?php
 session_start();
+<<<<<<< HEAD
 include __DIR__ . "/../../backend/connection.php";
+=======
+include __DIR__ . "/../../config/connection.php";
+>>>>>>> kaUhuyy
 
 $sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
 
@@ -48,13 +52,7 @@ $jumlah = mysqli_num_rows($data);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
@@ -82,14 +80,14 @@ $jumlah = mysqli_num_rows($data);
         <?php while($row = mysqli_fetch_assoc($data)) {?>
         <div class="col-md-6 col-lg-4 mx-auto">
             <div class="card h-100 shadow-sm">
-                <img>
+                <img src="../../asset/uploads/<?= $row['gambar']; ?>" class="card-img-top" alt="content image" style="height: 180px; object-fit: cover;">
                 <div class="card-body">
                     <h4><?php echo $row['judul']; ?></h4>
                     <p><?php echo $row['deskripsi']; ?></p>
                 </div>
                 <div class="card-footer">
                     <a href="konten_edit.php?id=<?php echo $row['id_konten'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
-                    <a href="/../../backend/hapus_konten.php?id=<?php echo $row['id_konten']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
+                    <a href="proses/hapus_konten.php?id=<?php echo $row['id_konten']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>
         </div>

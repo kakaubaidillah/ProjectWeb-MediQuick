@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
 $id_dokter = $_SESSION['id'];
 
@@ -49,13 +49,10 @@ $jumlah = mysqli_num_rows($data);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="rk_dokter.php?id=<?php echo $id_dokter ?>">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
@@ -94,7 +91,7 @@ $jumlah = mysqli_num_rows($data);
                 </div>
                 <div class="card-footer">
                     <a href="konsultasi_pasien.php?id=<?php echo $row['id_konsultasi'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
-                    <a href="/../../backend/hapus_konsultasi.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
+                    <a href="proses/hapus_konsul.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>
         </div>

@@ -1,13 +1,16 @@
 <?php
 session_start();
-include __DIR__ ."/../../backend/connection.php";
+include __DIR__ ."/../../config/connection.php";
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
 $data = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($data);
 
+$sql_konten = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
+$data_konten = mysqli_query($conn, $sql_konten);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,16 +58,17 @@ $row = mysqli_fetch_assoc($data);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="konsultasi.php?id=<?php echo $row['id_pasien']; ?>">Konsultasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="riwayat_konsultasi.php?id=<?php echo $row['id_pasien'] ?>">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
+<<<<<<< HEAD
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+=======
+                        <a class="nav-link" href="#">Logout</a>
+>>>>>>> kaUhuyy
                     </li>
                 </ul>
             </div>
@@ -78,28 +82,18 @@ $row = mysqli_fetch_assoc($data);
     </div>
 
     <div class="container my-4" style="max-width: 900px;">
-        <div class="row g-3" style="max-width: 800px;">
+        <div class="row g-3 justify-content-center" style="max-width: 800px;">
+            <?php while($konten = mysqli_fetch_assoc($data_konten)) {?>
             <div class="col-12 col-md-4">
                 <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images.jpg" alt="picture 1" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
+                    <?php if(!empty($konten['gambar'])) {?>
+                        <img src="../../asset/uploads/<?= $konten['gambar']; ?>" alt="Picture" class="img-top" style="height: 180px; object-fit: cover;">
+                    <?php } ?>
+                    <h5><?php echo $konten['judul']; ?></h5>
+                    <p><?php echo $konten['deskripsi']; ?></p>
                 </div>
             </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images(1).jpg" alt="picture 2" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <img src="../../asset/img/images(2).jpg" alt="picture 3" class="flexx-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
-                </div>
-            </div>
+            <?php } ?>
         </div>
     </div>
     

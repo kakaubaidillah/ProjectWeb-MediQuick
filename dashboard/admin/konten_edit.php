@@ -1,3 +1,13 @@
+<?php
+session_start();
+include __DIR__ . "/../../config/connection.php";
+$id = $_GET['id'];
+
+$sql = "SELECT * FROM konten_dashboard WHERE id_konten = '$id'";
+
+$data = mysqli_query($conn, $sql);
+$row = mysqli_fetch_assoc($data);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,18 +20,19 @@
 <body>
     <div class="container mt-5">
         <h5>Edit Konten Dasbord</h5>
-        <form action="../backend/edit_konten.php" method="POST">
+        <form action="proses/edit_konten.php" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<?= $id; ?>">
             <div class="mb-3">
                 <label class="form-label">Judul</label>
-                <input id="judul" type="text" name="judul" class="form-control" required>
+                <input id="judul" type="text" name="judul" class="form-control" value="<?= $row['judul']; ?>" required>
             </div>
             <div class="mb-3">
                 <label class="form-label">Deskripsi</label>
-                <textarea id="deskripsi" name="deskripsi" class="form-control" required></textarea>
+                <textarea id="deskripsi" name="deskripsi" class="form-control" required><?= $row['deskripsi']; ?></textarea>
             </div>
             <div class="mb-3">
                 <label class="form-label">Gambar</label>
-                <input id="gambar" type="file" name="gambar" class="form-control" accept="image/jpeg,image/png,image/webp" required>
+                <input id="gambar" type="file" name="images" class="form-control">
             </div>
             <button class="btn btn-primary mt-3" type="submit" name="update">Update</button>
             <a href="admin_form.php" class="btn btn-secondary mt-3">Kembali</a>

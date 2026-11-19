@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 $id_konsultasi = $_GET['id'];
 
 $sql_konsultasi = "SELECT * FROM konsultasi WHERE id_konsultasi = '$id_konsultasi'";
@@ -40,7 +40,9 @@ $pasien = mysqli_fetch_assoc($data_pasien);
     <div class="container mt-5">
         <div class="row">
             <div class="col-3 mb-4">
-                <img src="#" alt="image" style="width: -webkit-fill-available;">
+                <?php if(!empty($row['gambar'])) {?>
+                    <img src="../../asset/uploads/<?= $row['gambar'] ?>" alt="image" style="width: -webkit-fill-available;">
+                <?php } ?>
             </div>
             <div class="col">
                 <div class="card shadow-sm" style="max-width: 800px; max-height: 800px;">
@@ -50,21 +52,21 @@ $pasien = mysqli_fetch_assoc($data_pasien);
                             <h3>Nama: <?php echo $pasien['nama']; ?></h3>
                         </div>
                         <div class="btn-group mb-3" role="group" aria-label="Color selection">
-                                <label class="btn" style="
-                                                    background-color:#4fb0f0;
-                                                    outline: #4fb0f0 solid;
-                                                    color: white;">
-                                Status</label>
-                                <label class="btn" style="
-                                                    background-color: white;
-                                                    outline: #4fb0f0 solid;">
-                                <?php echo $row['status']; ?>
-                                </label>
-                            </div>
-                            <hr>
-                            <div>
-                                <h4 class="mb-2">Diagnosis: <?php echo $row['diagnosis']; ?></h4>
-                                <pre class="mb-4" style="white-space:pre-wrap; font-size: 18px;">Catatan: <?php echo $row['catatan_dokter']; ?></pre>
+                            <label class="btn" style="
+                                                background-color:#4fb0f0;
+                                                outline: #4fb0f0 solid;
+                                                color: white;">
+                            Status</label>
+                            <label class="btn" style="
+                                                background-color: white;
+                                                outline: #4fb0f0 solid;">
+                            <?php echo $row['status']; ?>
+                            </label>
+                        </div>
+                        <hr>
+                        <div>
+                            <h4 class="mb-2">Diagnosis: <?php echo $row['diagnosis']; ?></h4>
+                            <pre class="mb-4" style="white-space:pre-wrap; font-size: 18px;">Catatan: <?php echo $row['catatan_dokter']; ?></pre>
                         </div>
                     </div>
                 </div>

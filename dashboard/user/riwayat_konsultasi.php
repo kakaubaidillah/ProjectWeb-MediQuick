@@ -1,13 +1,13 @@
 <?php
 session_start();
-include __DIR__ ."/../../backend/connection.php";
+include __DIR__ ."/../../config/connection.php";
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
 $data_pasien = mysqli_query($conn, $sql);
 $row = mysqli_fetch_assoc($data_pasien);
 
-$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id'";
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE id_pasien = '$id' ORDER BY tanggal_konsultasi DESC";
 
 $data_konsul = mysqli_query($conn, $sql_konsultasi);
 
@@ -51,16 +51,17 @@ $jumlah = mysqli_num_rows($data_konsul);
                         <a class="nav-link active" href="user.php?id=<?php echo $row['id_pasien'];?>">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="konsultasi.php?id=<?php echo $row['id_pasien']; ?>">Konsultasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
+<<<<<<< HEAD
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+=======
+                        <a class="nav-link" href="#">Logout</a>
+>>>>>>> kaUhuyy
                     </li>
                 </ul>
             </div>

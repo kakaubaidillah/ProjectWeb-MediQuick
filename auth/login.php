@@ -19,7 +19,11 @@
     <?php } ?>
     <div class="form-container" id="loginform">
         <h2>LOGIN</h2>
+<<<<<<< HEAD:auth/login.php
         <form action="../backend/access_login.php" method="POST">
+=======
+        <form action="proses/access_login.php" method="POST">
+>>>>>>> kaUhuyy:login/login.php
             <div class="form-ketik">
                 <label><i class="bi bi-envelope-at-fill"></i> Email </label><br>
                 <input type="text" name="email" placeholder="Masukkan email anda"><br>

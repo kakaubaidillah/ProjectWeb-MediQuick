@@ -2,7 +2,7 @@
 session_start();
 $id = $_GET['id'];
 
-include __DIR__. "/../../backend/connection.php";
+include __DIR__. "/../../config/connection.php";
 //data konsultasi
 $data_konsul = mysqli_query($conn, "SELECT * FROM konsultasi WHERE id_konsultasi = '$id'");
 $konsul = mysqli_fetch_assoc($data_konsul);
@@ -49,8 +49,13 @@ $dokter = mysqli_fetch_assoc($data_dokter);
                 </tr>
             </tbody>
         </table>
+        <div>
+            <?php if(!empty($konsul['gambar'])) {?>
+                <img src="../../asset/uploads/<?= $konsul['gambar']; ?>" alt="Foto Kondisi" class="img-top" style="height: 180px; object-fit: cover;">
+            <?php } ?>
+        </div>
         <hr>
-        <form action="konsul_pasien.php" method="POST">
+        <form action="proses/konsul_pasien.php" method="POST">
             <input type="hidden" name="id" value="<?php echo $id ?>">
             <label>Diagnosis</label>
             <input type="text" name="diagnosa" id="diagnosa" class="form-control" required>

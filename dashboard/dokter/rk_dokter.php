@@ -1,10 +1,10 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
 $id_dokter = $_GET['id'];
 
-$sql_konsultasi = "SELECT * FROM konsultasi WHERE status != 'Menunggu'";
+$sql_konsultasi = "SELECT * FROM konsultasi WHERE status != 'Menunggu' ORDER BY tanggal_konsultasi DESC";
 
 $data = mysqli_query($conn, $sql_konsultasi);
 
@@ -47,13 +47,10 @@ $jumlah = mysqli_num_rows($data);
                         <a class="nav-link active" href="dashboard_dokter.php?id=<?php echo $id_dokter ?>">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                 </ul>
             </div>
