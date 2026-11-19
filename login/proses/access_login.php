@@ -23,11 +23,11 @@
             $idlogin = $_SESSION['id'];
 
             if($data['role'] == "admin") {
-                header("location: ../dashboard/admin/admin_form.php?id=$idlogin");
+                header("location: ../../dashboard/admin/admin_form.php?id=$idlogin");
             } else if($data['role'] == "dokter") {
-                header("location: ../dashboard/dokter/dashboard_dokter.php?id=$idlogin");
+                header("location: ../../dashboard/dokter/dashboard_dokter.php?id=$idlogin");
             } else if($data['role'] == "apoteker") {
-                header("location: ../dashboard/apoteker/dashboard_apoteker.php?id=$idlogin");
+                header("location: ../../dashboard/apoteker/dashboard_apoteker.php?id=$idlogin");
             }
             exit();
         } else {
@@ -53,7 +53,7 @@
 
             $uid = $_SESSION['id'];
 
-            header("location: ../dashboard/user/user.php?id=$uid");
+            header("location: ../../dashboard/user/user.php?id=$uid");
             exit();
         } else {
             echo "PASSWORD SALAH";

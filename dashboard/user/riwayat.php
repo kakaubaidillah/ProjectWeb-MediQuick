@@ -40,7 +40,9 @@ $pasien = mysqli_fetch_assoc($data_pasien);
     <div class="container mt-5">
         <div class="row">
             <div class="col-3 mb-4">
-                <img src="../../asset/uploads/<?= $row['gambar'] ?>" alt="image" style="width: -webkit-fill-available;">
+                <?php if(!empty($row['gambar'])) {?>
+                    <img src="../../asset/uploads/<?= $row['gambar'] ?>" alt="image" style="width: -webkit-fill-available;">
+                <?php } ?>
             </div>
             <div class="col">
                 <div class="card shadow-sm" style="max-width: 800px; max-height: 800px;">

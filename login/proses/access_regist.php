@@ -26,7 +26,7 @@
 
     if($query) {
         $id = mysqli_insert_id($conn);
-        header("location: ../user/user.php?id=$id");
+        header("location: ../../user/user.php?id=$id");
         exit();
     }
 ?>
