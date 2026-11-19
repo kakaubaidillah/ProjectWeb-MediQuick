@@ -1,6 +1,6 @@
 <?php 
 session_start();
-include __DIR__. "/connection.php";
+include __DIR__. "/../../../config/connection.php";
 
 $id = $_POST['id'];
 
@@ -19,7 +19,7 @@ if(isset($_POST['update'])){
         $namabaru = time(). "_". basename($gambar);
         $tmp = $_FILES['images']['tmp_name'];
 
-        $location = __DIR__."/../asset/img/". $namabaru;
+        $location = __DIR__."/../../../asset/uploads/". $namabaru;
         if(!move_uploaded_file($tmp, $location)){
             echo "Gagal Menyimpan Gambar";
             exit();
@@ -33,7 +33,7 @@ if(isset($_POST['update'])){
                     WHERE id_konten = '$id'";
     $query = mysqli_query($conn, $sql_update);
     if($query){
-        header("Location: ../dashboard/admin/admin_form.php");
+        header("Location: ../admin_form.php");
         exit;
     }else{
         echo "Gagal Menyimpan Data:". mysqli_error($conn);

@@ -15,7 +15,7 @@ $id = $_GET['id'];
     <div class="container mt-5">
         <h5>Konsultasi</h5>
         <p>Jelaskan Keluhanmu</p>
-        <form action="konsul.php" method="POST">
+        <form action="proses/konsul.php" method="POST">
             <input type="hidden" name="id" value="<?php echo $id ?>">
             <div class="mb-3">
                 <label class="form-label">Gejala</label>

@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ ."/../../backend/connection.php";
+include __DIR__ ."/../../config/connection.php";
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM pasien WHERE id_pasien = '$id'";
@@ -83,7 +83,7 @@ $data_konten = mysqli_query($conn, $sql_konten);
             <div class="col-12 col-md-4">
                 <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
                     <?php if(!empty($konten['gambar'])) {?>
-                        <img src="../../asset/img/<?= $konten['gambar']; ?>" alt="Picture" class="img-top" style="height: 180px; object-fit: cover;">
+                        <img src="../../asset/uploads/<?= $konten['gambar']; ?>" alt="Picture" class="img-top" style="height: 180px; object-fit: cover;">
                     <?php } ?>
                     <h5><?php echo $konten['judul']; ?></h5>
                     <p><?php echo $konten['deskripsi']; ?></p>

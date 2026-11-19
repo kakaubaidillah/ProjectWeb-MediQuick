@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 $id = $_GET['id'];
 
 $sql = "SELECT * FROM konten_dashboard WHERE id_konten = '$id'";
@@ -20,7 +20,7 @@ $row = mysqli_fetch_assoc($data);
 <body>
     <div class="container mt-5">
         <h5>Edit Konten Dasbord</h5>
-        <form action="../../backend/edit_konten.php" method="POST" enctype="multipart/form-data">
+        <form action="proses/edit_konten.php" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?= $id; ?>">
             <div class="mb-3">
                 <label class="form-label">Judul</label>

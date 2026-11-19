@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
 $id_dokter = $_GET['id'];
 
@@ -91,7 +91,7 @@ $jumlah = mysqli_num_rows($data);
                 </div>
                 <div class="card-footer">
                     <a href="konsultasi_pasien.php?id=<?php echo $row['id_konsultasi'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
-                    <a href="/../../backend/hapus_konsultasi.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
+                    <a href="proses/hapus_konsul.php?id=<?php echo $row['id_konsultasi']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>
         </div>

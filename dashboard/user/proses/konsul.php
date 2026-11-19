@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include __DIR__. "/../../backend/connection.php";
+include __DIR__. "/../../../config/connection.php";
 
 if(isset($_POST['kirim'])){
     $id = $_POST['id'];
@@ -15,7 +15,7 @@ if(isset($_POST['kirim'])){
         $namaBaru = time(). "_". basename($gambar);
         $tmp = $_FILES['images']['tmp_name'];
 
-        $location = __DIR__. "/../../asset/img/". $namaBaru;
+        $location = __DIR__. "/../../../asset/uploads/". $namaBaru;
         if(!move_uploaded_file($tmp, $location)){
             echo "Gagal Menyimpan Gambar";
             exit();

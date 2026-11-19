@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    include __DIR__ . "/../backend/connection.php";
+    include __DIR__ . "/../../config/connection.php";
 
     $nama     = $_POST['name'];
     $email    = $_POST['email'];

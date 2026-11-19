@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-include __DIR__. "/connection.php";
+include __DIR__. "/../../../config/connection.php";
 
 
 $judul = $_POST['judul'];
@@ -18,10 +18,10 @@ $hasil = mysqli_fetch_assoc($cek);
 
 if($hasil['jumlah'] >= 3){
     echo "<script>alert('Maksimal hanya 3 konten aktif');</script>";
-    header("Location: /../dashboard/admin/admin_form.php");
+    header("Location: ../admin_form.php");
 }
 
-$location = __DIR__."/../asset/img/". $namaBaru;
+$location = __DIR__."/../../../asset/uploads/". $namaBaru;
 
 if(move_uploaded_file($tmp, $location)){
     $sql_insert = "INSERT INTO konten_dashboard
@@ -30,7 +30,7 @@ if(move_uploaded_file($tmp, $location)){
     $query = mysqli_query($conn, $sql_insert);
 
     if($query){
-        header("Location: ../dashboard/admin/admin_form.php");
+        header("Location: ../admin_form.php");
         exit();
     }else{
         echo "Gagal Menyimpan Data:". mysqli_error($conn);

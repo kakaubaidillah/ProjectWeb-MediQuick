@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 $id_konsultasi = $_GET['id'];
 
 $sql_konsultasi = "SELECT * FROM konsultasi WHERE id_konsultasi = '$id_konsultasi'";
@@ -40,7 +40,7 @@ $pasien = mysqli_fetch_assoc($data_pasien);
     <div class="container mt-5">
         <div class="row">
             <div class="col-3 mb-4">
-                <img src="#" alt="image" style="width: -webkit-fill-available;">
+                <img src="../../asset/uploads/<?= $row['gambar'] ?>" alt="image" style="width: -webkit-fill-available;">
             </div>
             <div class="col">
                 <div class="card shadow-sm" style="max-width: 800px; max-height: 800px;">

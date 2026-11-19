@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
 $id_dokter = $_GET['id'];
 

@@ -11,7 +11,7 @@
 
     <div class="container mt-5">
         <h5>Tambah Konten Dasbord</h5>
-        <form action="../../backend/create_konten.php" method="POST" enctype="multipart/form-data">
+        <form action="proses/create_konten.php" method="POST" enctype="multipart/form-data">
             <div class="mb-3">
                 <label class="form-label">Judul</label>
                 <input id="judul" type="text" name="judul" class="form-control" required>
