@@ -30,7 +30,7 @@ if(move_uploaded_file($tmp, $location)){
     $query = mysqli_query($conn, $sql_insert);
 
     if($query){
-        header("Location: ../admin_form.php");
+        header("Location: ../dashboard_admin.php");
         exit();
     }else{
         echo "Gagal Menyimpan Data:". mysqli_error($conn);

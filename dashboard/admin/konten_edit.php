@@ -35,7 +35,7 @@ $row = mysqli_fetch_assoc($data);
                 <input id="gambar" type="file" name="images" class="form-control">
             </div>
             <button class="btn btn-primary mt-3" type="submit" name="update">Update</button>
-            <a href="admin_form.php" class="btn btn-secondary mt-3">Kembali</a>
+            <a href="dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
         </form>
     </div>
 </body>

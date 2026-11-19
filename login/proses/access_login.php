@@ -23,7 +23,7 @@
             $idlogin = $_SESSION['id'];
 
             if($data['role'] == "admin") {
-                header("location: ../../dashboard/admin/admin_form.php?id=$idlogin");
+                header("location: ../../dashboard/admin/dashboard_admin.php?id=$idlogin");
             } else if($data['role'] == "dokter") {
                 header("location: ../../dashboard/dokter/dashboard_dokter.php?id=$idlogin");
             } else if($data['role'] == "apoteker") {
@@ -57,9 +57,8 @@
             exit();
         } else {
             echo "PASSWORD SALAH";
-            // header("location: login.php?pesan=failed");
+            header("location: ../login.php?pesan=failed");
         }
     }
-    echo "123";
     // header("location: login.php?pesan=failed")
 ?>
