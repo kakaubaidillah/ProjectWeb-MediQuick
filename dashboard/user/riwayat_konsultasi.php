@@ -51,13 +51,13 @@ $jumlah = mysqli_num_rows($data_konsul);
                         <a class="nav-link active" href="user.php?id=<?php echo $row['id_pasien'];?>">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="konsultasi.php?id=<?php echo $row['id_pasien']; ?>">Konsultasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Riwayat Konsultasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                 </ul>
             </div>

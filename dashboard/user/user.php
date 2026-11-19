@@ -58,13 +58,13 @@ $data_konten = mysqli_query($conn, $sql_konten);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="konsultasi.php?id=<?php echo $row['id_pasien']; ?>">Konsultasi</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="riwayat_konsultasi.php?id=<?php echo $row['id_pasien'] ?>">Riwayat Konsultasi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                 </ul>
             </div>

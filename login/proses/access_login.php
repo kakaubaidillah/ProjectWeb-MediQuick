@@ -10,7 +10,7 @@
 
     
     $data = mysqli_fetch_assoc($query);
-    //cek data 
+    
     if($data) {
         if($pass == $data['password']) {
             $_SESSION['id'] = $data['id_admin'];

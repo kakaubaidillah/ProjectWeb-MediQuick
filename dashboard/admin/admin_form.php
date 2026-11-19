@@ -48,13 +48,7 @@ $jumlah = mysqli_num_rows($data);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                 </ul>
             </div>
