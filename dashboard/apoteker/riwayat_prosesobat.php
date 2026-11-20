@@ -44,7 +44,7 @@ include __DIR__ . "/../../backend/connection.php";
                         <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="proses_obat.php">Proses Resep</a>
+                        <a class="nav-link" href="antrean_prosesobat.php">Proses Resep</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="inventory.php">Inventory</a>

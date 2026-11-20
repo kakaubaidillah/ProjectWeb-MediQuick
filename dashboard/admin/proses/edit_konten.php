@@ -33,7 +33,7 @@ if(isset($_POST['update'])){
                     WHERE id_konten = '$id'";
     $query = mysqli_query($conn, $sql_update);
     if($query){
-        header("Location: ../admin_form.php");
+        header("Location: ../dashboard_admin.php");
         exit;
     }else{
         echo "Gagal Menyimpan Data:". mysqli_error($conn);

@@ -1,7 +1,8 @@
 <?php
 session_start();
-include __DIR__ . "/../../backend/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
+$query = mysqli_query($conn, "SELECT * FROM konsultasi WHERE status = 'Diproses'");
 
 
 ?>
@@ -44,7 +45,7 @@ include __DIR__ . "/../../backend/connection.php";
                         <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Proses Resep</a>
+                        <a class="nav-link" href="antrean_prosesobat.php">Proses Resep</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="inventory.php">Inventory</a>
@@ -60,9 +61,12 @@ include __DIR__ . "/../../backend/connection.php";
           </div>
         </div> 
     </nav>
-    <main>
-        <h1>Racik Resep Obat</h1>
-    </main>
+    
+    <div class="container-header">
+        <h1>Memproses Obat</h1>
+    </div>
+
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.min.js" integrity="sha384-89aa4glufciPv46aKltztWQEmk+Tu9W2RhzXr6VcnUUEub7F8+06RcL2RYLCOHUq" crossorigin="anonymous"></script>
 </body>

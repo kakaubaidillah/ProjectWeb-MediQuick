@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/connection.php";
+include __DIR__ . "/../../config/connection.php";
 
 if(isset($_POST['login'])) {
     $user = $_POST['email'];
@@ -23,15 +23,15 @@ if($data) {
         $_SESSION['status'] = "Login";
 
         if($data['role'] == "admin") {
-            header("location: ../dashboard/admin/dashboard_admin.php");
+            header("location: ../../dashboard/admin/dashboard_admin.php");
         } else if($data['role'] == "dokter") {
-            header("location: ../dashboard/dokter/dashboard_dokter.php");
+            header("location: ../../dashboard/dokter/dashboard_dokter.php");
         } else if($data['role'] == "apoteker") {
-            header("location: ../dashboard/apoteker/dashboard_apoteker.php");
+            header("location: ../../dashboard/apoteker/dashboard_apoteker.php");
         }
         exit();
     } else {
-        header("location: ../auth/login.php?pesan=failed");
+        header("location: ../login.php?pesan=failed");
     }
 }
 
@@ -52,14 +52,12 @@ if($datauser) {
         $_SESSION['role'] = "pasien";
         $_SESSION['status'] = "Login";
 
-        $uid = $_SESSION['id'];
-
-        header("location: ../dashboard/user/user.php?id=$uid");
+        header("location: ../../dashboard/user/user.php");
         exit();
     } else {
-        header("location: ../auth/login.php?pesan=failed");
+        header("location: ../login.php?pesan=failed");
     }
 }
 
-header("location: ../auth/login.php?pesan=failed");
+header("location: ../login.php?pesan=failed");
 ?>

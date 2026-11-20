@@ -14,25 +14,19 @@ if(isset($_SESSION['register-error'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../asset/css/formStyle.css">
-    <link rel="icon" type="image/-ico" href="../asset/img/icon.ico">
     <title>Daftar Akun</title>
-
 </head>
 
 <body>
 
     <div class="form-container" id="registform">
         <h2>REGISTRASI</h2>
-<<<<<<< HEAD:auth/registrasi.php
         <?php if(!empty($registerror)) { ?>
             <p class="existed-email">
                 <?= $registerror ?>
             </p>
         <?php } ?>
-        <form action="../backend/access_regist.php" method="POST">
-=======
         <form action="proses/access_regist.php" method="POST">
->>>>>>> kaUhuyy:login/registrasi.php
             <div class="form-ketik">
                 <!-- Nama -->
                 <label>Nama</label><br>

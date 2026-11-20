@@ -1,7 +1,7 @@
 <?php
     session_start();
 
-    include __DIR__ . "/connection.php";
+    include __DIR__ . "/../../config/connection.php";
 
     if(isset($_POST['registrasi'])) {
         $nama     = $_POST['name'];

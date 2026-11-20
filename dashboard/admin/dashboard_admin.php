@@ -1,35 +1,27 @@
 <?php
 session_start();
+<<<<<<< HEAD
+include __DIR__ . "/../../backend/connection.php";
+=======
+include __DIR__ . "/../../config/connection.php";
+>>>>>>> kaUhuyy
+
+$sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
+
+$data = mysqli_query($conn, $sql_form);
+
+$jumlah = mysqli_num_rows($data);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User</title>
-    <!-- Bootstrap CSS -->
+    <title>Dashboard Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap icon CDN -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <style>
-        .description-box{
-            background-color: whitesmoke;
-            color:black;
-            border-radius: 10px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .description-box p {font-size: 0.8rem; margin-bottom: 0;}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
-        .description-box img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin: 10px auto;
-            display: block;
-        }
-    </style>
 </head>
 
 <body>
@@ -60,13 +52,7 @@ session_start();
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Profil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Payment</a>
+                        <a class="nav-link" href="#">Logout</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
@@ -77,62 +63,44 @@ session_start();
         </div> 
     </nav>
 
-    <div class="container" style="margin-top: 100px;">
-        <h1 class="text-center mb-5">WELCOME!</h1>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit sequi sunt molestias ipsa itaque praesentium adipisci hic libero eligendi accusamus numquam officia eum recusandae veritatis modi, iure repellendus explicabo dolor.</p>
+    <div class="container" style="margin-top: 50px;">
+        <h2>Dashboard Admin</h2>
+        <p>Kelola Informasi dan Konten MediQuick</p>
+    </div>
+    <hr>
+
+    <div class="d-flex justify-content-between align-items-center mx-5">
+        <h3>Konten Dashboard</h3>
+        <?php if($jumlah < 3) { ?>
+        <a href="konten_tambah.php"><button class="btn btn-primary"><i class="bi bi-plus-circle"> Tambah Konten</i></button></a>
+        <?php } ?>
     </div>
 
-    <div class="container my-4" style="max-width: 900px;">
-        <div class="row g-3" style="max-width: 800px;">
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <a><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
-                    <a><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
-                    <img src="../asset/img/images.jpg" alt="picture 1" class="flex-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
+    <div class="row">
+        <?php while($row = mysqli_fetch_assoc($data)) {?>
+        <div class="col-md-6 col-lg-4 mx-auto">
+            <div class="card h-100 shadow-sm">
+                <img src="../../asset/uploads/<?= $row['gambar']; ?>" class="card-img-top" alt="content image" style="height: 180px; object-fit: cover;">
+                <div class="card-body">
+                    <h4><?php echo $row['judul']; ?></h4>
+                    <p><?php echo $row['deskripsi']; ?></p>
                 </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <a>
-                        <button class="btn btn-success"><i class="bi bi-pencil-square"></i></button>
-                    </a>
-                    <a>
-                        <button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
-                    </a>
-                    <img src="../asset/img/images1.jpg" alt="picture 2" class="flex-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
-                </div>
-            </div>
-            <div class="col-12 col-md-4">
-                <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
-                    <a>
-                        <button class="btn btn-success"><i class="bi bi-pencil-square"></i></button>
-                    </a>
-                    <a>
-                        <button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button>
-                    </a>
-                    <img src="../asset/img/images2.jpg" alt="picture 3" class="flex-shrink-0" style="max-width: 100px;">
-                    <h5>Capture your thoughts, one note at a time.</h5>
-                    <p>Express how you feel, record your everyday moments, and clear your mind. Happy, sad, or somewhere in between, just put it into words.</p>
+                <div class="card-footer">
+                    <a href="konten_edit.php?id=<?php echo $row['id_konten'];?>"><button class="btn btn-success"><i class="bi bi-pencil-square"></i></button></a>
+                    <a href="proses/hapus_konten.php?id=<?php echo $row['id_konten']; ?>"><button class="btn btn-danger"><i class="bi bi-trash3-fill"></i></button></a>
                 </div>
             </div>
         </div>
+        <?php } ?>
+
+        <?php if($jumlah == 0) {?>
+            <div class="col-12">
+                <div class="alert alert-info">Belum ada konten dashboard</div>
+            </div>
+        <?php } ?>
     </div>
-    
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function hoverOn(el) {
-            el.style.backgroundColor = "#4fb0f0";
-            el.style.color = "white";
-        }
-        function hoverOff(el) {
-            el.style.backgroundColor = "whitesmoke";
-            el.style.color = "black";
-        }
-    </script>
 </body>
 </html>

@@ -25,7 +25,7 @@
                 <input id="gambar" type="file" name="images" class="form-control" required>
             </div>
             <button class="btn btn-primary mt-3" type="submit" name="simpan">Simpan</button>
-            <a href="admin_form.php" class="btn btn-secondary mt-3">Kembali</a>
+            <a href="dashboard_admin.php" class="btn btn-secondary mt-3">Kembali</a>
         </form>
     </div>
     
