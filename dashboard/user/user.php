@@ -64,11 +64,7 @@ $data_konten = mysqli_query($conn, $sql_konten);
                         <a class="nav-link" href="riwayat_konsultasi.php?id=<?php echo $row['id_pasien'] ?>">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
-<<<<<<< HEAD
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
-=======
-                        <a class="nav-link" href="#">Logout</a>
->>>>>>> kaUhuyy
                     </li>
                 </ul>
             </div>

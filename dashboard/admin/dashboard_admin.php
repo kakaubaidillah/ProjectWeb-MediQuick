@@ -1,10 +1,6 @@
 <?php
 session_start();
-<<<<<<< HEAD
-include __DIR__ . "/../../backend/connection.php";
-=======
 include __DIR__ . "/../../config/connection.php";
->>>>>>> kaUhuyy
 
 $sql_form = "SELECT * FROM konten_dashboard WHERE status = 1 ORDER BY id_konten DESC";
 

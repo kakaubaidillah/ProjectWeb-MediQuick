@@ -57,11 +57,7 @@ $jumlah = mysqli_num_rows($data_konsul);
                         <a class="nav-link" href="#">Riwayat Konsultasi</a>
                     </li>
                     <li class="nav-item">
-<<<<<<< HEAD
                         <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
-=======
-                        <a class="nav-link" href="#">Logout</a>
->>>>>>> kaUhuyy
                     </li>
                 </ul>
             </div>
