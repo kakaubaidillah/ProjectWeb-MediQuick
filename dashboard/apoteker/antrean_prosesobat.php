@@ -2,6 +2,12 @@
 session_start();
 include __DIR__ . "/../../config/connection.php";
 
+$idapoteker = $_SESSION['id'] ?? "";
+
+// if(empty($idapoteker)) {
+//     header("location: ../../login/login.php");
+//     exit();
+// }
 
 
 ?>

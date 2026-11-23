@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 12, 2026 at 03:14 PM
+-- Generation Time: Nov 22, 2026 at 11:34 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -79,7 +79,7 @@ CREATE TABLE `detail_resep` (
   `dosis` varchar(100) NOT NULL,
   `aturan_pakai` varchar(255) NOT NULL,
   `catatan` text DEFAULT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,7 @@ CREATE TABLE `konsultasi` (
 
 INSERT INTO `konsultasi` (`id_konsultasi`, `id_pasien`, `id_dokter`, `gejala`, `sejak_kapan`, `riwayat_alergi`, `riwayat_penyakit`, `foto_gejala`, `diagnosis`, `catatan_dokter`, `status`, `tanggal_konsultasi`, `tanggal_selesai`) VALUES
 (1, 3, NULL, 'Meriang, Pusing, HopelessRomantic, Kunang-kunang, kurang uang', '2000-02-03', 'recehan', 'homeless', NULL, NULL, NULL, 'Menunggu', '2026-11-11 16:09:39', NULL),
-(2, 2, NULL, 'Sakit gigi, meriang, panas dalam', '1988-03-14', '', '', NULL, NULL, NULL, 'Menunggu', '2026-11-11 20:36:57', NULL);
+(2, 2, 2, 'Sakit gigi, meriang, panas dalam', '1988-03-14', '', '', NULL, 'pepek', 'ijazah vs roy suryo\r\n', 'Diproses', '2026-11-11 20:36:57', NULL);
 
 -- --------------------------------------------------------
 
@@ -151,12 +151,11 @@ CREATE TABLE `notifikasi` (
 CREATE TABLE `obat` (
   `id_obat` int(11) NOT NULL,
   `nama_obat` varchar(150) NOT NULL,
-  `deskripsi` text DEFAULT NULL,
   `kategori` varchar(100) DEFAULT NULL,
   `satuan` varchar(30) DEFAULT NULL,
   `harga` decimal(12,2) NOT NULL DEFAULT 0.00,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -212,7 +211,7 @@ CREATE TABLE `stok_obat` (
   `jumlah_stok` int(11) NOT NULL DEFAULT 0,
   `tanggal_masuk` date DEFAULT NULL,
   `tanggal_kadaluarsa` date NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables

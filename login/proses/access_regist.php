@@ -18,7 +18,7 @@
     $querycheck = mysqli_query($conn, $sqlcheck);
     if(mysqli_num_rows($querycheck) > 0) {
         $_SESSION['register-error'] = "Email Telah Terdaftar";
-        header("location: ../auth/registrasi.php");
+        header("location: ../registrasi.php");
         exit();
     }
 

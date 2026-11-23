@@ -3,28 +3,29 @@ session_start();
 include __DIR__ . "/../../config/connection.php";
 
 $idapoteker = $_SESSION['id'] ?? "";
-if(empty($idapoteker)) {
-    header("location: ../../login/login.php");
-    exit();
-}
+
+// if(empty($idapoteker)) {
+//     header("location: ../../login/login.php");
+//     exit();
+// }
 
 //Mengambil data konsultasi untuk ditampilkan
 $QueryKonsul = mysqli_query($conn, "SELECT
                     k.id_konsultasi, 
                     p.nama AS nama_pasien, 
                     d.nama AS nama_dokter 
-                FROM konsultasi k 
-                INNER JOIN pasien p 
+               FROM konsultasi k 
+               INNER JOIN pasien p 
                     ON k.id_pasien = p.id_pasien 
-                INNER JOIN admin d 
+               INNER JOIN admin d 
                     ON k.id_dokter = d.id_admin 
-                WHERE k.status = 'Diproses' ORDER BY k.tanggal_konsultasi DESC LIMIT 3");
+               WHERE k.status = 'Diproses' ORDER BY k.tanggal_konsultasi DESC LIMIT 3");
 //Menghitung jumlah data dengan status 'Diproses'
 $QueryDiproses = mysqli_query($conn, "SELECT COUNT(*) AS total FROM konsultasi WHERE status ='Diproses'");
 //Menghitung jumlah data dengan status 'Selesai'
 $QuerySelesai = mysqli_query($conn, "SELECT COUNT(*) AS total FROM konsultasi WHERE status='Selesai'");
 
-$QueryCekObat = mysqli_query($conn, "SELECT COUNT(*) AS jumlah_obat FROM obat");
+$QueryCekObat = mysqli_query($conn, "SELECT COUNT(*) AS jumlah_obat FROM stok_obat");
 
 //Mengambil informasi stok obat dan expired
 $QueryObat = mysqli_query($conn, "SELECT 
@@ -74,7 +75,7 @@ foreach ($dataObat as $rowObat) {
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
-    <title>Dashboard Apoteker</title>
+    <title>Dashboard Apoteker - MediQuick</title>
     <style>
         .dashboard-btn {
             padding: 10px;
@@ -123,8 +124,7 @@ foreach ($dataObat as $rowObat) {
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../auth/login.php"
-                                onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link" href="../../login/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -132,8 +132,8 @@ foreach ($dataObat as $rowObat) {
         </div>
     </nav>
 
-    <div class="p-2">
-        <div class="container-fluid d-flex flex-column align-item-start" style="margin: 10px 0px; padding: 12px 12px;">
+    <div class="container p-2">
+        <div class="container-fluid d-flex flex-column align-items-start" style="margin: 10px 0px; padding: 12px 12px;">
             <h1 class="fw-bold mb-0 fs-1">DASHBOARD</h1>
             <p class="text-muted mb-0">Ringkasan Aktivitas</p>
         </div>
@@ -143,7 +143,7 @@ foreach ($dataObat as $rowObat) {
             <div class="row g-3 mb-3">
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-left align-items-start">
+                        <div class="d-flex justify-content-start align-items-start">
                             <div>
                                 <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Antrean Resep</p>
                                 <?php
@@ -151,7 +151,6 @@ foreach ($dataObat as $rowObat) {
                                 $jmlDiproses = $dataDiproses['total'];
                                 ?>
                                 <h3 class="fw-bold mb-0" id="konsulmasuk"><?= $jmlDiproses ?></h3>
-                                <div></div>
                             </div>
                         </div>
                     </div>
@@ -159,7 +158,7 @@ foreach ($dataObat as $rowObat) {
 
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-left align-items-start">
+                        <div class="d-flex justify-content-start align-items-start">
                             <div>
                                 <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Resep selesai</p>
                                 <?php
@@ -184,7 +183,7 @@ foreach ($dataObat as $rowObat) {
                         <button type="button" id="semua-rsp" class="dashboard-btn" onclick="window.location.href=('antrean_prosesobat.php')">Lihat Semua</button>
                     </div>
                     <div class="table-responsive border rounded-3 overflow-auto">
-                        <table class="table table-hover table-align-middle mb-0">
+                        <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nomor Konsultasi</th>
@@ -217,7 +216,7 @@ foreach ($dataObat as $rowObat) {
                         <button type="button" id="semua-obt" class="dashboard-btn" onclick="window.location.href=('inventory.php')">Lihat Semua</button>
                     </div>
                     <div class="table-responsive border rounded-3 overflow-auto">
-                        <table class="table table-hover table-align-left mb-0">
+                        <table class="table table-hover align-middle mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th>Nomor Obat</th>
@@ -235,7 +234,7 @@ foreach ($dataObat as $rowObat) {
                                 ?>
                                 <?php if($jmlobat == 0) { ?>
                                     <tr>
-                                        <td colspan="6" class="text-center text-secondary p-3 fw-bold">Gudang Obat Kosong</td>
+                                        <td colspan="6" class="text-center text-secondary p-3 fw-bold">Penyimpanan Obat Kosong</td>
                                     </tr>
                                 <?php } elseif (empty($peringatan)) { ?>
                                     <tr>
