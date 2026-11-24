@@ -158,7 +158,7 @@ $daftar_satuan = [
                     <?php endif; ?>
 
                     <!-- Form diarahkan ke file proses terpisah -->
-                    <form method="POST" action="update_deleteobat.php">
+                    <form method="POST" action="proses/update_deleteobat.php">
                         <!-- Hidden ID Obat & ID Stok untuk acuan update/delete -->
                         <input type="hidden" name="id_obat" value="<?= $data['id_obat'] ?>">
                         <input type="hidden" name="id_stok" value="<?= $data['id_stok'] ?>">

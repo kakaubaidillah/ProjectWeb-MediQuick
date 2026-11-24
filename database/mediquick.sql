@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2026 at 11:34 AM
+-- Generation Time: Nov 24, 2026 at 03:17 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -130,21 +130,6 @@ CREATE TABLE `konten_dashboard` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `notifikasi`
---
-
-CREATE TABLE `notifikasi` (
-  `id_notifikasi` int(11) NOT NULL,
-  `id_pasien` int(11) NOT NULL,
-  `judul` varchar(150) NOT NULL,
-  `pesan` text NOT NULL,
-  `status_baca` tinyint(1) NOT NULL DEFAULT 0,
-  `tanggal_notifikasi` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `obat`
 --
 
@@ -194,7 +179,7 @@ CREATE TABLE `resep` (
   `id_konsultasi` int(11) NOT NULL,
   `id_apoteker` int(11) DEFAULT NULL,
   `tanggal_resep` datetime NOT NULL DEFAULT current_timestamp(),
-  `status_resep` enum('Menunggu','Diproses','Siap Diambil','Selesai','Dibatalkan') NOT NULL DEFAULT 'Menunggu',
+  `status_resep` enum('Dikirim','Diterima') NOT NULL DEFAULT 'Dikirim',
   `catatan` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -256,13 +241,6 @@ ALTER TABLE `konsultasi`
 --
 ALTER TABLE `konten_dashboard`
   ADD PRIMARY KEY (`id_konten`);
-
---
--- Indexes for table `notifikasi`
---
-ALTER TABLE `notifikasi`
-  ADD PRIMARY KEY (`id_notifikasi`),
-  ADD KEY `idx_notifikasi_pasien` (`id_pasien`,`status_baca`);
 
 --
 -- Indexes for table `obat`
@@ -327,12 +305,6 @@ ALTER TABLE `konten_dashboard`
   MODIFY `id_konten` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `notifikasi`
---
-ALTER TABLE `notifikasi`
-  MODIFY `id_notifikasi` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `obat`
 --
 ALTER TABLE `obat`
@@ -379,12 +351,6 @@ ALTER TABLE `detail_resep`
 ALTER TABLE `konsultasi`
   ADD CONSTRAINT `fk_konsultasi_dokter` FOREIGN KEY (`id_dokter`) REFERENCES `admin` (`id_admin`) ON DELETE SET NULL ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_konsultasi_pasien` FOREIGN KEY (`id_pasien`) REFERENCES `pasien` (`id_pasien`) ON UPDATE CASCADE;
-
---
--- Constraints for table `notifikasi`
---
-ALTER TABLE `notifikasi`
-  ADD CONSTRAINT `fk_notifikasi_pasien` FOREIGN KEY (`id_pasien`) REFERENCES `pasien` (`id_pasien`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `resep`

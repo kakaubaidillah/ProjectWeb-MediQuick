@@ -11,7 +11,8 @@ $idapoteker = $_SESSION['id'] ?? "";
 
 //Mengambil data konsultasi untuk ditampilkan
 $QueryKonsul = mysqli_query($conn, "SELECT
-                    k.id_konsultasi, 
+                    k.id_konsultasi,
+                    k.catatan_dokter, 
                     p.nama AS nama_pasien, 
                     d.nama AS nama_dokter 
                FROM konsultasi k 
@@ -124,7 +125,7 @@ foreach ($dataObat as $rowObat) {
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -189,6 +190,7 @@ foreach ($dataObat as $rowObat) {
                                     <th>Nomor Konsultasi</th>
                                     <th>Pasien</th>
                                     <th>Dokter</th>
+                                    <th>Catatan Dokter (Resep)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -202,6 +204,7 @@ foreach ($dataObat as $rowObat) {
                                             <td><?= $rowKonsul['id_konsultasi'] ?></td>
                                             <td><?= $rowKonsul['nama_pasien'] ?></td>
                                             <td><?= $rowKonsul['nama_dokter'] ?></td>
+                                            <td><?= nl2br(htmlspecialchars($rowKonsul['catatan_dokter'])) ?? '-' ?></td>
                                         </tr>
                                     <?php } ?>
                                 <?php } ?>
