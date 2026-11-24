@@ -87,7 +87,7 @@ $jmldataobat = mysqli_num_rows($Query);
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                         </li>
                     </ul>
                 </div>

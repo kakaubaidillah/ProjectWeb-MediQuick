@@ -133,7 +133,7 @@ $daftar_satuan = [
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -165,14 +165,11 @@ $daftar_satuan = [
 
                         <h5 class="fw-bold mb-3 text-primary border-bottom pb-2">Informasi Obat</h5>
                         <div class="row g-3 mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label fw-semibold">ID Obat</label>
-                                <input type="text" class="form-control bg-light" value="<?= $data['id_obat'] ?>" readonly>
-                            </div>
-                            <div class="col-md-9">
+                            <div class="col-md-12">
                                 <label class="form-label fw-semibold">Nama Obat <span class="text-danger">*</span></label>
                                 <input type="text" name="nama_obat" class="form-control" value="<?= $data['nama_obat'] ?>" required>
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
                                 <select name="kategori" class="form-select" required>
@@ -197,7 +194,7 @@ $daftar_satuan = [
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Harga (Rp) <span class="text-danger">*</span></label>
-                                <input type="number" step="0.01" name="harga" class="form-control" value="<?= $data['harga'] ?>" required>
+                                <input type="number" step="100" name="harga" class="form-control" value="<?= $data['harga'] ?>" required>
                             </div>
                         </div>
 
