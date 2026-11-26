@@ -2,68 +2,58 @@
 session_start();
 include __DIR__ . "/../../config/connection.php";
 
+// Validasi session login & role apoteker (Modul 6 & 7)
 $idapoteker = $_SESSION['id'] ?? "";
+$role       = $_SESSION['role'] ?? "";
 
-// if(empty($idapoteker)) {
-//     header("location: ../../login/login.php");
+// if (empty($idapoteker) || $role !== "apoteker") {
+//     header("Location: ../../login/login.php");
 //     exit();
 // }
 
-//Mengambil data konsultasi untuk ditampilkan
-$QueryKonsul = mysqli_query($conn, "SELECT
-                    k.id_konsultasi,
-                    k.catatan_dokter, 
-                    p.nama AS nama_pasien, 
-                    d.nama AS nama_dokter 
-               FROM konsultasi k 
-               INNER JOIN pasien p 
-                    ON k.id_pasien = p.id_pasien 
-               INNER JOIN admin d 
-                    ON k.id_dokter = d.id_admin 
-               WHERE k.status = 'Diproses' ORDER BY k.tanggal_konsultasi DESC LIMIT 3");
-//Menghitung jumlah data dengan status 'Diproses'
-$QueryDiproses = mysqli_query($conn, "SELECT COUNT(*) AS total FROM konsultasi WHERE status ='Diproses'");
-//Menghitung jumlah data dengan status 'Selesai'
-$QuerySelesai = mysqli_query($conn, "SELECT COUNT(*) AS total FROM konsultasi WHERE status='Selesai'");
+// 1. Query ringkasan jumlah pesanan selesai (status = 'dibayar') dengan Prepared Statement
+$status_selesai = 'dibayar';
+$stmt_selesai   = mysqli_prepare($conn, "SELECT COUNT(id_pesanan) AS total_selesai FROM pesanan WHERE status = ?");
+mysqli_stmt_bind_param($stmt_selesai, "s", $status_selesai);
+mysqli_stmt_execute($stmt_selesai);
+$res_selesai    = mysqli_stmt_get_result($stmt_selesai);
+$data_selesai   = mysqli_fetch_assoc($res_selesai);
+$total_selesai  = $data_selesai['total_selesai'] ?? 0;
+mysqli_stmt_close($stmt_selesai);
 
-$QueryCekObat = mysqli_query($conn, "SELECT COUNT(*) AS jumlah_obat FROM stok_obat");
+// 2. Query ringkasan jumlah jenis obat yang dimiliki apotek dengan Prepared Statement
+$stmt_obat  = mysqli_prepare($conn, "SELECT COUNT(id_obat) AS total_obat FROM obat");
+mysqli_stmt_execute($stmt_obat);
+$res_obat   = mysqli_stmt_get_result($stmt_obat);
+$data_obat  = mysqli_fetch_assoc($res_obat);
+$total_obat = $data_obat['total_obat'] ?? 0;
+mysqli_stmt_close($stmt_obat);
 
-//Mengambil informasi stok obat dan expired
-$QueryObat = mysqli_query($conn, "SELECT 
-                o.id_obat, 
-                so.nomor_batch,
-                o.nama_obat, 
-                so.jumlah_stok, 
-                so.tanggal_kadaluarsa,
-                DATEDIFF(so.tanggal_kadaluarsa, CURDATE()) AS selisih_hari
-             FROM stok_obat so 
-             INNER JOIN obat o 
-                ON so.id_obat = o.id_obat
-             ORDER BY so.tanggal_kadaluarsa ASC");
+// 3. Query cek stok dan kadaluarsa dengan Prepared Statement
+$batas_hari = 30;
+$batas_stok = 10;
+$stmt_check = mysqli_prepare($conn, "SELECT so.id_stok, so.batch, so.jumlah_stok, so.tanggal_kadaluarsa, o.nama_obat, DATEDIFF(so.tanggal_kadaluarsa, CURDATE()) AS sisa_hari
+                                     FROM stok_obat so
+                                     JOIN obat o ON so.id_obat = o.id_obat
+                                     WHERE so.tanggal_kadaluarsa <= DATE_ADD(CURDATE(), INTERVAL ? DAY)
+                                        OR so.jumlah_stok <= ?
+                                     ORDER BY so.tanggal_kadaluarsa ASC, so.jumlah_stok ASC");
+mysqli_stmt_bind_param($stmt_check, "ii", $batas_hari, $batas_stok);
+mysqli_stmt_execute($stmt_check);
+$queryCheckObat = mysqli_stmt_get_result($stmt_check);
 
-$dataObat = mysqli_fetch_all($QueryObat, MYSQLI_ASSOC); //Mengambil langsung semua baris data dalam satu array
-$peringatan = [];
-
-foreach ($dataObat as $rowObat) {
-    $keterangan = [];
-    if ($rowObat['jumlah_stok'] <= 0) {
-        $keterangan[] = 'Stok Kosong';
-    } elseif ($rowObat['jumlah_stok'] <= 20) {
-        $keterangan[] = 'Stok Menipis';
-    }
-
-    if ($rowObat['selisih_hari'] <= 0) {
-        $keterangan[] = 'Expired';
-    } elseif ($rowObat['selisih_hari'] <= 20) {
-        $keterangan[] = 'Hampir Expired';
-    }
-
-    if (!empty($keterangan)) {
-        $rowObat['keterangan'] = implode("/", $keterangan);
-        $peringatan[] = $rowObat;
-    }
-
-}
+// 4. Query daftar pesanan yang melampirkan gambar resep dengan status 'menunggu' dengan Prepared Statement
+$status_menunggu = 'menunggu';
+$stmt_antrean    = mysqli_prepare($conn, "SELECT p.id_pesanan, p.tanggal_pesanan, p.alamat_pengiriman, p.resep_obat, pl.nama_lengkap 
+                                          FROM pesanan p 
+                                          JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan 
+                                          WHERE p.status = ? 
+                                            AND p.resep_obat IS NOT NULL 
+                                            AND p.resep_obat != '' 
+                                          ORDER BY p.tanggal_pesanan ASC");
+mysqli_stmt_bind_param($stmt_antrean, "s", $status_menunggu);
+mysqli_stmt_execute($stmt_antrean);
+$query_antrean = mysqli_stmt_get_result($stmt_antrean);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,24 +67,12 @@ foreach ($dataObat as $rowObat) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
     <title>Dashboard Apoteker - MediQuick</title>
-    <style>
-        .dashboard-btn {
-            padding: 10px;
-            background-color: #4fb0f0;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body>
-    <nav class="navbar" style="background-color: #4fb0f0;">
+    <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="#">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
@@ -102,21 +80,17 @@ foreach ($dataObat as $rowObat) {
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- isi HM -->
+            <!-- Isi Hamburger Menu -->
             <div class="offcanvas offcanvas-end text-bg-light" tabindex="-1" id="offcanvasNavbar"
                 aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu Navigasi</h5>
-                    <!-- tombol X -->
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="antrean_prosesobat.php">Proses Resep</a>
+                            <a class="nav-link active fw-bold" href="dashboard_apoteker.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="inventory.php">Inventory</a>
@@ -125,7 +99,7 @@ foreach ($dataObat as $rowObat) {
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -136,154 +110,160 @@ foreach ($dataObat as $rowObat) {
     <div class="container p-2">
         <div class="container-fluid d-flex flex-column align-items-start" style="margin: 10px 0px; padding: 12px 12px;">
             <h1 class="fw-bold mb-0 fs-1">DASHBOARD</h1>
-            <p class="text-muted mb-0">Ringkasan Aktivitas</p>
+            <p class="text-muted mb-0">Ringkasan Aktivitas Apoteker</p>
         </div>
 
-        <!-- Card Statistik Resep START -->
+        <!-- Card Statistik START -->
         <div class="container-fluid p-2">
             <div class="row g-3 mb-3">
+                <!-- Kartu 1: Pesanan Selesai (status = 'dibayar') -->
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-start align-items-start">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Antrean Resep</p>
-                                <?php
-                                $dataDiproses = mysqli_fetch_assoc($QueryDiproses);
-                                $jmlDiproses = $dataDiproses['total'];
-                                ?>
-                                <h3 class="fw-bold mb-0" id="konsulmasuk"><?= $jmlDiproses ?></h3>
+                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Pesanan Selesai</p>
+                                <h3 class="fw-bold mb-0"><?= $total_selesai; ?></h3>
                             </div>
+                            <i class="bi bi-bag-check-fill fs-1" style="color: #4fb0f0;"></i>
                         </div>
                     </div>
                 </div>
 
+                <!-- Kartu 2: Jenis Obat Tersedia -->
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-start align-items-start">
+                        <div class="d-flex justify-content-between align-items-center">
                             <div>
-                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Resep selesai</p>
-                                <?php
-                                $dataSelesai = mysqli_fetch_assoc($QuerySelesai);
-                                $jmlSelesai = $dataSelesai['total'];
-                                ?>
-                                <h3 class="fw-bold mb-0" id="konsulselesai"><?= $jmlSelesai ?></h3>
+                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Total Jenis Obat</p>
+                                <h3 class="fw-bold mb-0"><?= $total_obat; ?></h3>
                             </div>
+                            <i class="bi bi-capsule fs-1" style="color: #4fb0f0;"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Card Statistik Resep END -->
+        <!-- Card Statistik END -->
 
-        <!-- Card List Singkat 3 Resep START -->
+        <!-- Card Notifikasi Stok Obat -->
         <div class="container-fluid p-2">
             <div class="row g-3 px-2">
                 <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">Antrean Resep</h5>
-                        <button type="button" id="semua-rsp" class="dashboard-btn" onclick="window.location.href=('antrean_prosesobat.php')">Lihat Semua</button>
+                        <h5 class="fw-bold mb-0">NOTIFIKASI</h5>
+                        <button type="button" class="btn btn-primary btn-sm" style="border-radius: 10px;" onclick="window.location.href=('inventory.php')">Lihat Semua</button>
                     </div>
                     <div class="table-responsive border rounded-3 overflow-auto">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
+                        <table class="table table-hover table-bordered align-middle mb-0">
+                            <thead class="table-light text-center">
                                 <tr>
-                                    <th>Nomor Konsultasi</th>
-                                    <th>Pasien</th>
-                                    <th>Dokter</th>
-                                    <th>Catatan Dokter (Resep)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if ($jmlDiproses == 0) { ?>
-                                    <tr>
-                                        <td colspan="3" class="text-center text-secondary p-3 fw-bold">Tidak Ada Antrean</td>
-                                    </tr>
-                                <?php } else { ?>
-                                    <?php while ($rowKonsul = mysqli_fetch_assoc($QueryKonsul)) { ?>
-                                        <tr>
-                                            <td><?= $rowKonsul['id_konsultasi'] ?></td>
-                                            <td><?= $rowKonsul['nama_pasien'] ?></td>
-                                            <td><?= $rowKonsul['nama_dokter'] ?></td>
-                                            <td><?= nl2br(htmlspecialchars($rowKonsul['catatan_dokter'])) ?? '-' ?></td>
-                                        </tr>
-                                    <?php } ?>
-                                <?php } ?>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">Informasi Obat</h5>
-                        <button type="button" id="semua-obt" class="dashboard-btn" onclick="window.location.href=('inventory.php')">Lihat Semua</button>
-                    </div>
-                    <div class="table-responsive border rounded-3 overflow-auto">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Nomor Obat</th>
                                     <th>Batch</th>
                                     <th>Nama Obat</th>
-                                    <th>Stock</th>
-                                    <th>Expired</th>
+                                    <th>Stok</th>
+                                    <th>Tanggal Kadaluarsa</th>
                                     <th>Keterangan</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php
-                                $cekobat = mysqli_fetch_assoc($QueryCekObat);
-                                $jmlobat = $cekobat['jumlah_obat'];
-                                ?>
-                                <?php if($jmlobat == 0) { ?>
+                                <?php if (mysqli_num_rows($queryCheckObat) == 0) { ?>
                                     <tr>
-                                        <td colspan="6" class="text-center text-secondary p-3 fw-bold">Penyimpanan Obat Kosong</td>
-                                    </tr>
-                                <?php } elseif (empty($peringatan)) { ?>
-                                    <tr>
-                                        <td colspan="6" class="text-center text-secondary p-3 fw-bold">Persediaan Aman</td>
+                                        <td colspan="5" class="text-center text-secondary p-4 fw-bold">Persediaan Obat Aman</td>
                                     </tr>
                                 <?php } else { ?>
-                                    <?php foreach ($peringatan as $rowPeringatan) { ?>
+                                    <?php
+                                    while ($kondisiobat = mysqli_fetch_assoc($queryCheckObat)) {
+                                        $sisahari = (int)$kondisiobat['sisa_hari'];
+                                        $stok = (int)$kondisiobat['jumlah_stok'];
+                                        $peringatan = [];
+
+                                        if ($sisahari <= 0) {
+                                            $peringatan[] = '<span class="badge rounded-pill text-bg-danger">Expired</span>';
+                                        } elseif ($sisahari <= 30) {
+                                            $peringatan[] = '<span class="badge rounded-pill text-bg-warning">Hampir Expired</span>';
+                                        }
+
+                                        if ($stok <= 0) {
+                                            $peringatan[] = '<span class="badge rounded-pill text-bg-danger">Stok Habis</span>';
+                                        } elseif ($stok <= 10) {
+                                            $peringatan[] = '<span class="badge rounded-pill text-bg-warning">Stok Menipis</span>';
+                                        }
+                                    ?>
                                         <tr>
-                                            <td><?= $rowPeringatan['id_obat'] ?></td>
-                                            <td><?= $rowPeringatan['nomor_batch'] ?></td>
-                                            <td><?= $rowPeringatan['nama_obat'] ?></td>
-                                            <td><?= $rowPeringatan['jumlah_stok'] ?></td>
-                                            <td><?= $rowPeringatan['tanggal_kadaluarsa'] ?></td>
-                                            <td><?= $rowPeringatan['keterangan'] ?></td>
+                                            <td><?= htmlspecialchars($kondisiobat['batch']); ?></td>
+                                            <td><?= htmlspecialchars($kondisiobat['nama_obat']); ?></td>
+                                            <td><?= $stok; ?></td>
+                                            <td><?= htmlspecialchars($kondisiobat['tanggal_kadaluarsa']); ?></td>
+                                            <td><?= implode(" ", $peringatan); ?></td>
                                         </tr>
-                                <?php }
-                                } ?>
+                                    <?php } ?>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Card List Singkat 3 Resep END -->
+        <!-- Card Notifikasi Stok Obat END -->
+
+        <!-- Card List Antrean Verifikasi Resep START -->
+        <div class="container-fluid p-2">
+            <div class="row g-3 px-2">
+                <div class="card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="fw-bold mb-0">Antrean Verifikasi Resep</h5>
+                        </div>
+                    </div>
+                    <div class="table-responsive border rounded-3 overflow-auto">
+                        <table class="table table-hover table-bordered align-middle mb-0">
+                            <thead class="table-light text-center">
+                                <tr>
+                                    <th>ID Pesanan</th>
+                                    <th>Nama Pelanggan</th>
+                                    <th>Tanggal Pesanan</th>
+                                    <th>Lampiran Resep</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (mysqli_num_rows($query_antrean) == 0) { ?>
+                                    <tr>
+                                        <td colspan="5" class="text-center text-secondary p-4 fw-bold">
+                                            Tidak Ada Antrean Verifikasi Resep
+                                        </td>
+                                    </tr>
+                                <?php } else { ?>
+                                    <?php while ($row = mysqli_fetch_assoc($query_antrean)) { ?>
+                                        <tr>
+                                            <td class="fw-bold">#<?= $row['id_pesanan']; ?></td>
+                                            <td><?= htmlspecialchars($row['nama_lengkap']); ?></td>
+                                            <td><?= date("d M Y, H:i", strtotime($row['tanggal_pesanan'])); ?></td>
+                                            <td>
+                                                <span class="badge bg-info text-dark"><i class="bi bi-file-earmark-image"></i> Terlampir</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <a href="proses_pesanan.php?id=<?= $row['id_pesanan']; ?>" class="btn btn-primary btn-sm fw-bold">Verifikasi</a>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card List Antrean Verifikasi Resep END -->
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.min.js"
-        integrity="sha384-89aa4glufciPv46aKltztWQEmk+Tu9W2RhzXr6VcnUUEub7F8+06RcL2RYLCOHUq"
-        crossorigin="anonymous"></script>
-    <script>
-        const resepbtn = document.getElementById('semua-rsp');
-        const obatbtn = document.getElementById('semua-obt');
+    <?php
+    mysqli_stmt_close($stmt_check);
+    mysqli_stmt_close($stmt_antrean);
+    ?>
 
-        resepbtn.onmouseover = () => {
-            resepbtn.style.backgroundColor = '#008afc';
-        }
-        resepbtn.onmouseout = () => {
-            resepbtn.style.backgroundColor = '#4fb0f0';
-        }
-        obatbtn.onmouseover = () => {
-            obatbtn.style.backgroundColor = '#008afc';
-        }
-        obatbtn.onmouseout = () => {
-            obatbtn.style.backgroundColor = '#4fb0f0';
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

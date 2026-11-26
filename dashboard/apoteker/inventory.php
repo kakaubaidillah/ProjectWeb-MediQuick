@@ -3,27 +3,22 @@ session_start();
 include __DIR__ . "/../../config/connection.php";
 
 $idapoteker = $_SESSION['id'] ?? "";
+$role = $_SESSION['role'] ?? "";
 
-// if (empty($idapoteker)) {
+// if (empty($idapoteker) || $role != "apoteker") {
 //     header("location: ../../login/login.php");
 //     exit();
 // }
 
-$Query = mysqli_query($conn, "SELECT
-            o.id_obat,
-            so.nomor_batch,
-            o.nama_obat,
-            o.kategori,
-            o.satuan,
-            o.harga,
-            so.tanggal_kadaluarsa,
-            so.jumlah_stok
-         FROM obat o
-         INNER JOIN stok_obat so
-            ON o.id_obat = so.id_obat
-         ORDER BY o.nama_obat, so.tanggal_kadaluarsa");
+// Query daftar obat menggunakan Prepared Statement
+$sql_inventory = "SELECT o.id_obat, o.nama_obat, o.kategori, so.batch, so.jumlah_stok, so.tanggal_kadaluarsa, DATEDIFF(so.tanggal_kadaluarsa, CURDATE()) AS sisa_hari
+                  FROM obat o
+                  JOIN stok_obat so ON o.id_obat = so.id_obat
+                  ORDER BY so.tanggal_kadaluarsa ASC";
 
-$jmldataobat = mysqli_num_rows($Query);
+$stmt = mysqli_prepare($conn, $sql_inventory);
+mysqli_stmt_execute($stmt);
+$queryObat = mysqli_stmt_get_result($stmt);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,24 +31,12 @@ $jmldataobat = mysqli_num_rows($Query);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
     <title>Penyimpanan Obat - MediQuick</title>
-    <style>
-        .inv-btn {
-            padding: 10px;
-            background-color: #4fb0f0;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
 <body>
     <nav class="navbar" style="background-color: #4fb0f0;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="#">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler"
@@ -65,11 +48,10 @@ $jmldataobat = mysqli_num_rows($Query);
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- isi HM -->
+            <!-- Isi Hamburger Menu -->
             <div class="offcanvas offcanvas-end text-bg-light" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu Navigasi</h5>
-                    <!-- tombol X -->
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -78,16 +60,17 @@ $jmldataobat = mysqli_num_rows($Query);
                             <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="antrean_prosesobat.php">Proses Resep</a>
+                            <a class="nav-link" href="proses_pesanan.php">Proses Resep</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="#">Inventory</a>
+                            <a class="nav-link active fw-bold" href="inventory.php">Inventory</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php"
+                                onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -104,44 +87,42 @@ $jmldataobat = mysqli_num_rows($Query);
             <div class="row g-3 px-2">
                 <div class="card p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0"> Katalog Obat</h5>
+                        <h5 class="fw-bold mb-0">Daftar Obat</h5>
                         <div>
-                            <button type="button" id="tambahobat-btn" class="inv-btn" onclick="window.location.href = 'tambah_obat.php'"><i class="bi bi-plus"></i>Tambah Obat</button>
+                            <button type="button" class="btn btn-primary fw-bold py-2" style="border-radius: 10px;" onclick="window.location.href = 'tambah_obat.php'"><i class="bi bi-plus"></i> Tambah Obat</button>
                         </div>
                     </div>
                     <div class="table-responsive border rounded-3">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
+                        <table class="table table-hover table-bordered align-middle mb-0">
+                            <thead class="table-light text-center">
                                 <tr>
-                                    <th>Nomor Obat</th>
                                     <th>Batch</th>
                                     <th>Nama Obat</th>
                                     <th>Kategori</th>
-                                    <th>Satuan</th>
-                                    <th>Harga</th>
                                     <th>Stok</th>
-                                    <th>Kadaluarsa</th>
-                                    <th></th>
+                                    <th>Tanggal Kadaluarsa</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php if ($jmldataobat <= 0) { ?>
+                                <?php if (mysqli_num_rows($queryObat) == 0) { ?>
                                     <tr>
-                                        <td colspan="9" class="text-center text-secondary p-3 fw-bold">Penyimpanan Obat Kosong</td>
+                                        <td colspan="6" class="text-secondary text-center fw-bold">Tidak Ada Obat</td>
                                     </tr>
                                 <?php } else { ?>
-                                    <?php while ($row = mysqli_fetch_assoc($Query)) { ?>
+                                    <?php
+                                    while ($daftar_obat = mysqli_fetch_assoc($queryObat)) {
+                                        $sisahari = (int)$daftar_obat['sisa_hari'];
+                                        $stok = (int)$daftar_obat['jumlah_stok'];
+                                    ?>
                                         <tr>
-                                            <td><?= $row['id_obat'] ?></td>
-                                            <td><?= $row['nomor_batch'] ?></td>
-                                            <td><?= $row['nama_obat'] ?></td>
-                                            <td><?= $row['kategori'] ?></td>
-                                            <td><?= $row['satuan'] ?></td>
-                                            <td>Rp <?= number_format($row['harga'], 0, ',', '.') ?></td>
-                                            <td><?= $row['jumlah_stok'] ?></td>
-                                            <td><?= $row['tanggal_kadaluarsa'] ?></td>
+                                            <td>#<?= htmlspecialchars($daftar_obat['batch']); ?></td>
+                                            <td><?= htmlspecialchars($daftar_obat['nama_obat']); ?></td>
+                                            <td><?= htmlspecialchars($daftar_obat['kategori']); ?></td>
+                                            <td class="fw-bold <?= ($stok <= 0) ? 'text-danger' : (($stok <= 10) ? 'text-warning' : '') ?>"><?= $stok ?></td>
+                                            <td class="fw-bold <?= ($sisahari <= 0) ? 'text-danger' : (($sisahari <= 30) ? 'text-warning' : '') ?>"><?= htmlspecialchars($daftar_obat['tanggal_kadaluarsa']); ?></td>
                                             <td class="text-center">
-                                                <a href="detail_obat.php?id=<?= $row['id_obat'] ?>&batch=<?= urlencode($row['nomor_batch']) ?>"><i class="bi bi-pencil-square"></i> Lihat Detail</a>
+                                                <a href="detail_obat.php?id=<?= $daftar_obat['id_obat'] ?>&batch=<?= urlencode($daftar_obat['batch']) ?>" class="btn btn-sm btn-primary fw-bold">Lihat Detail</a>
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -154,17 +135,12 @@ $jmldataobat = mysqli_num_rows($Query);
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/js/bootstrap.min.js" integrity="sha384-89aa4glufciPv46aKltztWQEmk+Tu9W2RhzXr6VcnUUEub7F8+06RcL2RYLCOHUq" crossorigin="anonymous"></script>
-    <script>
-        const addmed_btn = document.getElementById('tambahobat-btn');
+    <?php
+    // Tutup statement setelah selesai digunakan
+    mysqli_stmt_close($stmt);
+    ?>
 
-        addmed_btn.onmouseover = () => {
-            addmed_btn.style.backgroundColor = '#008afc';
-        }
-        addmed_btn.onmouseout = () => {
-            addmed_btn.style.backgroundColor = '#4fb0f0';
-        }
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 
 </html>

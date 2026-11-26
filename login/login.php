@@ -1,3 +1,16 @@
+<?php
+session_start();
+
+if(isset($_SESSION['id'])) {
+    if($_SESSION['role'] == "apoteker") {
+        header("location: ../dashboard/apoteker/dashboard_apoteker.php");
+        exit();
+    } else {
+        header("location: ../dashboard/user/user.php");
+        exit();
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,19 +44,21 @@
         const loginbtn = document.getElementById('login-btn');
         const todaftarbtn = document.getElementById('toregistpage-btn')
 
-        loginbtn.onmouseover = () => {
-            loginbtn.style.backgroundColor = "#0D75DE";
-        }
-        loginbtn.onmouseout = () => {
-            loginbtn.style.backgroundColor = "#2791F5";
-        }
-
-        todaftarbtn.onmouseover = () => {
+        loginbtn.addEventListener("mouseover", function() {
+            loginbtn.style.backgroundColor = "#2C5EAD";
+        })
+        loginbtn.addEventListener("mouseout", function() {
+            loginbtn.style.backgroundColor = "#1591DC";
+        })
+        
+        
+        todaftarbtn.addEventListener("mouseover", function() {
             todaftarbtn.style.textDecoration = "underline";
-        }
-        todaftarbtn.onmouseout = () => {
+        })
+        todaftarbtn.addEventListener("mouseout", function() {
             todaftarbtn.style.textDecoration = "none";
-        }
+        })
+
     </script>
 </body>
 

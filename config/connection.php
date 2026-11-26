@@ -2,7 +2,7 @@
     $hostname = "localhost";
     $username = "root";
     $password = "";
-    $database = "mediquick";
+    $database = "mediquicknew";
 
     $conn = mysqli_connect($hostname, $username, $password, $database);
 

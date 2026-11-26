@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2026 at 07:15 PM
+-- Generation Time: Nov 25, 2026 at 09:41 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -20,18 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `mediquicknew`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `alamat`
---
-
-CREATE TABLE `alamat` (
-  `id_alamat` int(11) NOT NULL,
-  `id_pelanggan` int(11) NOT NULL,
-  `alamat_lengkap` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -74,7 +62,8 @@ CREATE TABLE `obat` (
   `kategori` varchar(50) NOT NULL,
   `satuan` varchar(30) NOT NULL,
   `harga` decimal(12,2) NOT NULL,
-  `butuh_resep` tinyint(1) DEFAULT 0
+  `butuh_resep` tinyint(1) DEFAULT 0,
+  `gambar_obat` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -102,12 +91,12 @@ CREATE TABLE `pelanggan` (
 CREATE TABLE `pesanan` (
   `id_pesanan` int(11) NOT NULL,
   `id_pelanggan` int(11) NOT NULL,
-  `id_alamat` int(11) NOT NULL,
+  `alamat_pengiriman` text NOT NULL,
   `id_apoteker` int(11) DEFAULT NULL,
   `tanggal_pesanan` datetime DEFAULT current_timestamp(),
   `total_harga` decimal(12,2) NOT NULL DEFAULT 0.00,
   `resep_obat` varchar(255) DEFAULT NULL,
-  `status` enum('menunggu','belum bayar','dibayar','ditolak') NOT NULL DEFAULT 'belum bayar',
+  `status` enum('menunggu','belum bayar','dibayar','ditolak','dibatalkan') NOT NULL DEFAULT 'belum bayar',
   `catatan_apoteker` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -129,13 +118,6 @@ CREATE TABLE `stok_obat` (
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `alamat`
---
-ALTER TABLE `alamat`
-  ADD PRIMARY KEY (`id_alamat`),
-  ADD KEY `id_pelanggan` (`id_pelanggan`);
 
 --
 -- Indexes for table `apoteker`
@@ -171,7 +153,6 @@ ALTER TABLE `pelanggan`
 ALTER TABLE `pesanan`
   ADD PRIMARY KEY (`id_pesanan`),
   ADD KEY `id_pelanggan` (`id_pelanggan`),
-  ADD KEY `id_alamat` (`id_alamat`),
   ADD KEY `id_apoteker` (`id_apoteker`);
 
 --
@@ -184,12 +165,6 @@ ALTER TABLE `stok_obat`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `alamat`
---
-ALTER TABLE `alamat`
-  MODIFY `id_alamat` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `apoteker`
@@ -232,12 +207,6 @@ ALTER TABLE `stok_obat`
 --
 
 --
--- Constraints for table `alamat`
---
-ALTER TABLE `alamat`
-  ADD CONSTRAINT `alamat_ibfk_1` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`) ON DELETE CASCADE;
-
---
 -- Constraints for table `detail_pesanan`
 --
 ALTER TABLE `detail_pesanan`
@@ -249,7 +218,6 @@ ALTER TABLE `detail_pesanan`
 --
 ALTER TABLE `pesanan`
   ADD CONSTRAINT `pesanan_ibfk_1` FOREIGN KEY (`id_pelanggan`) REFERENCES `pelanggan` (`id_pelanggan`),
-  ADD CONSTRAINT `pesanan_ibfk_2` FOREIGN KEY (`id_alamat`) REFERENCES `alamat` (`id_alamat`),
   ADD CONSTRAINT `pesanan_ibfk_3` FOREIGN KEY (`id_apoteker`) REFERENCES `apoteker` (`id_apoteker`) ON DELETE SET NULL;
 
 --

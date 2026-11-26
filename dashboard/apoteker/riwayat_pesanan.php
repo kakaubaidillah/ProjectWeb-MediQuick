@@ -49,16 +49,13 @@ $idapoteker = $_SESSION['id'] ?? "";
                         <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="antrean_prosesobat.php">Proses Resep</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="inventory.php">Inventory</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Riwayat</a>
+                        <a class="nav-link active" href="#">Riwayat Pesanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../../auth/login.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                        <a class="nav-link" href="../../login/proses/logout.php" onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
                     </li>
                 </ul>
             </div>

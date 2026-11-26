@@ -157,7 +157,7 @@ $query_daftar_obat = mysqli_query($conn, "SELECT
 $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
 ?>
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
