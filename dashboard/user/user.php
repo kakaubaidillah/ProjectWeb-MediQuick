@@ -110,10 +110,13 @@ $data_obat = mysqli_query($conn, $sql_obat);
                         <a class="nav-link active" href="#">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Konsultasi</a>
+                        <a class="nav-link" href="beli_obat.php">Pesan Obat</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Riwayat Konsultasi</a>
+                        <a class="nav-link" href="daftar_obat.php">Daftar Obat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Logout</a>

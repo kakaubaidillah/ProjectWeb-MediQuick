@@ -122,10 +122,21 @@ function kartu_pesanan($p, $badge, $rupiah)
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item"><a class="nav-link" href="user.php">Beranda</a></li>
-                        <li class="nav-item"><a class="nav-link" href="form_pembelian.php">Beli Obat</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="riwayat_pesanan.php">Riwayat Pesanan</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Logout</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="user.php">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="beli_obat.php">Pesan Obat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="daftar_obat.php">Daftar Obat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Riwayat Pesanan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>

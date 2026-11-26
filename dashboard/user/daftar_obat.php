@@ -107,19 +107,19 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="user.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>">Beranda</a>
+                            <a class="nav-link" href="user.php">Beranda</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="daftar_obat.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>">Daftar Obat</a>
+                            <a class="nav-link" href="beli_obat.php">Pesan Obat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="konsultasi.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>">Konsultasi</a>
+                            <a class="nav-link active" href="#">Daftar Obat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="riwayat_konsultasi.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>">Riwayat Konsultasi</a>
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php">Logout</a>
+                            <a class="nav-link" href="#">Logout</a>
                         </li>
                     </ul>
                 </div>

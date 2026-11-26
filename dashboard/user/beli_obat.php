@@ -126,10 +126,21 @@ if($edit_id > 0){
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                        <li class="nav-item"><a class="nav-link active" href="user.php">Beranda</a></li>
-                        <li class="nav-item"><a class="nav-link" href="konsultasi.php">Konsultasi</a></li>
-                        <li class="nav-item"><a class="nav-link" href="riwayat_konsultasi.php">Riwayat Konsultasi</a></li>
-                        <li class="nav-item"><a class="nav-link text-danger" href="../../login/proses/access_logout.php">Logout</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="user.php">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">Pesan Obat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="daftar_obat.php">Daftar Obat</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Logout</a>
+                        </li>
                     </ul>
                 </div>
             </div>
