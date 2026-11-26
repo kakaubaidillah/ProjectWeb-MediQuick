@@ -1,15 +1,15 @@
 <?php
 session_start();
 
-if(isset($_SESSION['id'])) {
-    if($_SESSION['role'] == "apoteker") {
-        header("location: ../dashboard/apoteker/dashboard_apoteker.php");
-        exit();
-    } else {
-        header("location: ../dashboard/user/user.php");
-        exit();
-    }
-}
+// if(isset($_SESSION['id'])) {
+//     if($_SESSION['role'] == "apoteker") {
+//         header("location: ../dashboard/apoteker/dashboard_apoteker.php");
+//         exit();
+//     } else {
+//         header("location: ../dashboard/user/user.php");
+//         exit();
+//     }
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">

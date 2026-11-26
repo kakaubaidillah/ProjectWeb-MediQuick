@@ -2,7 +2,6 @@
 session_start();
 include __DIR__ . "/../../config/connection.php";
 
-// Validasi session login & role apoteker (Modul 6 & 7)
 $idapoteker = $_SESSION['id'] ?? "";
 $role       = $_SESSION['role'] ?? "";
 
@@ -11,7 +10,7 @@ $role       = $_SESSION['role'] ?? "";
 //     exit();
 // }
 
-// 1. Query ringkasan jumlah pesanan selesai (status = 'dibayar') dengan Prepared Statement
+// ringkasan jumlah pesanan selesai dengan status 'dibayar'
 $status_selesai = 'dibayar';
 $stmt_selesai   = mysqli_prepare($conn, "SELECT COUNT(id_pesanan) AS total_selesai FROM pesanan WHERE status = ?");
 mysqli_stmt_bind_param($stmt_selesai, "s", $status_selesai);
@@ -21,7 +20,7 @@ $data_selesai   = mysqli_fetch_assoc($res_selesai);
 $total_selesai  = $data_selesai['total_selesai'] ?? 0;
 mysqli_stmt_close($stmt_selesai);
 
-// 2. Query ringkasan jumlah jenis obat yang dimiliki apotek dengan Prepared Statement
+// ringkasan jumlah jenis obat yang dimiliki apotek 
 $stmt_obat  = mysqli_prepare($conn, "SELECT COUNT(id_obat) AS total_obat FROM obat");
 mysqli_stmt_execute($stmt_obat);
 $res_obat   = mysqli_stmt_get_result($stmt_obat);
@@ -29,7 +28,7 @@ $data_obat  = mysqli_fetch_assoc($res_obat);
 $total_obat = $data_obat['total_obat'] ?? 0;
 mysqli_stmt_close($stmt_obat);
 
-// 3. Query cek stok dan kadaluarsa dengan Prepared Statement
+// cek stok dan kadaluarsa
 $batas_hari = 30;
 $batas_stok = 10;
 $stmt_check = mysqli_prepare($conn, "SELECT so.id_stok, so.batch, so.jumlah_stok, so.tanggal_kadaluarsa, o.nama_obat, DATEDIFF(so.tanggal_kadaluarsa, CURDATE()) AS sisa_hari
@@ -42,7 +41,7 @@ mysqli_stmt_bind_param($stmt_check, "ii", $batas_hari, $batas_stok);
 mysqli_stmt_execute($stmt_check);
 $queryCheckObat = mysqli_stmt_get_result($stmt_check);
 
-// 4. Query daftar pesanan yang melampirkan gambar resep dengan status 'menunggu' dengan Prepared Statement
+// daftar pesanan dengan status 'menunggu' 
 $status_menunggu = 'menunggu';
 $stmt_antrean    = mysqli_prepare($conn, "SELECT p.id_pesanan, p.tanggal_pesanan, p.alamat_pengiriman, p.resep_obat, pl.nama_lengkap 
                                           FROM pesanan p 
@@ -96,10 +95,10 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                             <a class="nav-link" href="inventory.php">Inventory</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
+                            <a class="nav-link text-danger fw-bold" href="../../login/proses/access_logout.php" onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -122,9 +121,9 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Pesanan Selesai</p>
-                                <h3 class="fw-bold mb-0"><?= $total_selesai; ?></h3>
+                                <h3 class="fw-bold mb-0"><?= $total_selesai ?></h3>
                             </div>
-                            <i class="bi bi-bag-check-fill fs-1" style="color: #4fb0f0;"></i>
+                            <i class="bi bi bi-check2-circle fs-1" style="color: #4fb0f0;"></i>
                         </div>
                     </div>
                 </div>
@@ -135,7 +134,7 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Total Jenis Obat</p>
-                                <h3 class="fw-bold mb-0"><?= $total_obat; ?></h3>
+                                <h3 class="fw-bold mb-0"><?= $total_obat ?></h3>
                             </div>
                             <i class="bi bi-capsule fs-1" style="color: #4fb0f0;"></i>
                         </div>
@@ -192,7 +191,7 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                                             <td><?= htmlspecialchars($kondisiobat['batch']); ?></td>
                                             <td><?= htmlspecialchars($kondisiobat['nama_obat']); ?></td>
                                             <td><?= $stok; ?></td>
-                                            <td><?= htmlspecialchars($kondisiobat['tanggal_kadaluarsa']); ?></td>
+                                            <td><?= date("d M Y", strtotime($kondisiobat['tanggal_kadaluarsa'])); ?></td>
                                             <td><?= implode(" ", $peringatan); ?></td>
                                         </tr>
                                     <?php } ?>

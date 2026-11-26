@@ -5,7 +5,7 @@ include __DIR__ . "/../../config/connection.php";
 $idapoteker = $_SESSION['id'] ?? "";
 $role = $_SESSION['role'] ?? "";
 
-// if (empty($idapoteker) || $role != "apoteker") {
+// if (empty($idapoteker) || $role !== "apoteker") {
 //     header("location: ../../login/login.php");
 //     exit();
 // }
@@ -34,7 +34,7 @@ $queryObat = mysqli_stmt_get_result($stmt);
 </head>
 
 <body>
-    <nav class="navbar" style="background-color: #4fb0f0;">
+    <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
 
@@ -60,17 +60,14 @@ $queryObat = mysqli_stmt_get_result($stmt);
                             <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="proses_pesanan.php">Proses Resep</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link active fw-bold" href="inventory.php">Inventory</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php"
-                                onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link text-danger fw-bold" href="../../login/proses/access_logout.php"
+                                onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -89,7 +86,7 @@ $queryObat = mysqli_stmt_get_result($stmt);
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold mb-0">Daftar Obat</h5>
                         <div>
-                            <button type="button" class="btn btn-primary fw-bold py-2" style="border-radius: 10px;" onclick="window.location.href = 'tambah_obat.php'"><i class="bi bi-plus"></i> Tambah Obat</button>
+                            <button type="button" class="btn btn-primary fw-bold" style="border-radius: 10px;" onclick="window.location.href = 'tambah_obat.php'"><i class="bi bi-plus"></i> Tambah Obat</button>
                         </div>
                     </div>
                     <div class="table-responsive border rounded-3">
@@ -120,7 +117,7 @@ $queryObat = mysqli_stmt_get_result($stmt);
                                             <td><?= htmlspecialchars($daftar_obat['nama_obat']); ?></td>
                                             <td><?= htmlspecialchars($daftar_obat['kategori']); ?></td>
                                             <td class="fw-bold <?= ($stok <= 0) ? 'text-danger' : (($stok <= 10) ? 'text-warning' : '') ?>"><?= $stok ?></td>
-                                            <td class="fw-bold <?= ($sisahari <= 0) ? 'text-danger' : (($sisahari <= 30) ? 'text-warning' : '') ?>"><?= htmlspecialchars($daftar_obat['tanggal_kadaluarsa']); ?></td>
+                                            <td class="fw-bold <?= ($sisahari <= 0) ? 'text-danger' : (($sisahari <= 30) ? 'text-warning' : '') ?>"><?= date("d M Y", strtotime($daftar_obat['tanggal_kadaluarsa'])); ?></td>
                                             <td class="text-center">
                                                 <a href="detail_obat.php?id=<?= $daftar_obat['id_obat'] ?>&batch=<?= urlencode($daftar_obat['batch']) ?>" class="btn btn-sm btn-primary fw-bold">Lihat Detail</a>
                                             </td>

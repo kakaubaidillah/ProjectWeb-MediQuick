@@ -11,45 +11,54 @@ $role       = $_SESSION['role'] ?? "";
 //     exit();
 // }
 
-// $id_pesanan = mysqli_real_escape_string($conn, $_GET['id'] ?? '');
+$id_pesanan = $_GET['id'] ?? '';
 
-// if (empty($id_pesanan)) {
-//     echo "<script>alert('ID Pesanan tidak valid!'); window.location.href='dashboard_apoteker.php';</script>";
-//     exit();
-// }
+if (empty($id_pesanan)) {
+    echo "<script>alert('ID Pesanan tidak valid!'); window.location.href='dashboard_apoteker.php';</script>";
+    exit();
+}
 
 // Ambil pesan error jika ada redirect gagal dari proses/eksekusi_pesanan.php
-
 $error_msg = $_SESSION['proses_error'] ?? "";
 unset($_SESSION['proses_error']);
 
-// 1. Ambil detail pesanan & data pelanggan
+// 1. Ambil detail pesanan & data pelanggan menggunakan Prepared Statement
 $sql_pesanan = "SELECT p.id_pesanan, p.alamat_pengiriman, p.tanggal_pesanan, p.total_harga, 
                        p.resep_obat, p.status, p.catatan_apoteker,
                        pl.nama_lengkap, pl.no_telp, pl.tanggal_lahir, pl.gender
                 FROM pesanan p
                 INNER JOIN pelanggan pl ON p.id_pelanggan = pl.id_pelanggan
-                WHERE p.id_pesanan = '$id_pesanan'";
-$query_pesanan = mysqli_query($conn, $sql_pesanan);
-$data          = mysqli_fetch_assoc($query_pesanan);
+                WHERE p.id_pesanan = ?";
 
-// if (!$data) {
-//     echo "<script>alert('Data pesanan tidak ditemukan!'); window.location.href='dashboard_apoteker.php';</script>";
-//     exit();
-// }
+$stmt_pesanan = mysqli_prepare($conn, $sql_pesanan);
+mysqli_stmt_bind_param($stmt_pesanan, "i", $id_pesanan);
+mysqli_stmt_execute($stmt_pesanan);
+$result_pesanan = mysqli_stmt_get_result($stmt_pesanan);
+$data           = mysqli_fetch_assoc($result_pesanan);
+mysqli_stmt_close($stmt_pesanan);
 
-// 2. Ambil daftar obat & total stok aktif (belum kedaluwarsa) untuk dropdown pilihan obat
-$query_daftar_obat = mysqli_query($conn, "SELECT 
-                                            o.id_obat, 
-                                            o.nama_obat, 
-                                            o.satuan, 
-                                            o.harga,
-                                            COALESCE(SUM(CASE WHEN so.tanggal_kadaluarsa >= CURDATE() THEN so.jumlah_stok ELSE 0 END), 0) AS total_stok
-                                          FROM obat o
-                                          LEFT JOIN stok_obat so ON o.id_obat = so.id_obat
-                                          GROUP BY o.id_obat, o.nama_obat, o.satuan, o.harga
-                                          ORDER BY o.nama_obat ASC");
-$daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
+if (!$data) {
+    echo "<script>alert('Data pesanan tidak ditemukan!'); window.location.href='dashboard_apoteker.php';</script>";
+    exit();
+}
+
+// 2. Ambil daftar obat & total stok aktif (belum kedaluwarsa) untuk dropdown pilihan obat menggunakan Prepared Statement
+$sql_daftar_obat = "SELECT 
+                        o.id_obat, 
+                        o.nama_obat, 
+                        o.satuan, 
+                        o.harga,
+                        COALESCE(SUM(CASE WHEN so.tanggal_kadaluarsa >= CURDATE() THEN so.jumlah_stok ELSE 0 END), 0) AS total_stok
+                    FROM obat o
+                    LEFT JOIN stok_obat so ON o.id_obat = so.id_obat
+                    GROUP BY o.id_obat, o.nama_obat, o.satuan, o.harga
+                    ORDER BY o.nama_obat ASC";
+
+$stmt_obat = mysqli_prepare($conn, $sql_daftar_obat);
+mysqli_stmt_execute($stmt_obat);
+$result_obat = mysqli_stmt_get_result($stmt_obat);
+$daftar_obat = mysqli_fetch_all($result_obat, MYSQLI_ASSOC);
+mysqli_stmt_close($stmt_obat);
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -64,23 +73,6 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
     <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
     <title>Verifikasi Resep & Pesanan - MediQuick</title>
     <style>
-        .inv-btn {
-            padding: 10px 24px;
-            background-color: #4fb0f0;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .inv-btn:hover {
-            background-color: #008afc;
-            color: white;
-        }
-
         .resep-preview {
             max-height: 450px;
             object-fit: contain;
@@ -91,7 +83,7 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
 
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar" style="background-color: #4fb0f0;">
+    <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
 
@@ -117,17 +109,14 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
                             <a class="nav-link" href="dashboard_apoteker.php">Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active fw-bold" href="proses_pesanan.php">Proses Resep</a>
-                        </li>
-                        <li class="nav-item">
                             <a class="nav-link" href="inventory.php">Inventory</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php"
-                                onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link text-danger fw-bold" href="../../login/proses/access_logout.php"
+                                onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -150,7 +139,7 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
         <div class="container-fluid p-2">
             <div class="row g-3 px-2">
                 <?php if (!empty($error_msg)) { ?>
-                    <div class="alert alert-danger fw-semibold"><?= $error_msg ?></div>
+                    <div class="alert alert-danger fw-semibold"><?= htmlspecialchars($error_msg); ?></div>
                 <?php } ?>
 
                 <!-- KARTU 1: INFORMASI PESANAN & GAMBAR RESEP PELANGGAN -->
@@ -166,7 +155,7 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">ID Pesanan</label>
-                                    <input type="text" class="form-control bg-light fw-bold" value="#<?= $data['id_pesanan']; ?>" readonly>
+                                    <input type="text" class="form-control bg-light fw-bold" value="#<?= htmlspecialchars($data['id_pesanan']); ?>" readonly>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-semibold">Tanggal Pesanan</label>
@@ -196,18 +185,18 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
                         <div class="col-lg-6">
                             <label class="form-label fw-semibold">Foto Resep Dokter dari Pelanggan</label>
                             <div class="border rounded-3 p-3 bg-light text-center">
-                                <?php if (!empty($data['resep_obat'])) : ?>
-                                    <a href="../../asset/img/resep/<?= htmlspecialchars($data['resep_obat']); ?>" target="_blank" title="Klik untuk memperbesar gambar">
-                                        <img src="../../asset/img/resep/<?= htmlspecialchars($data['resep_obat']); ?>"
+                                <?php if (!empty($data['resep_obat'])) { ?>
+                                    <a href="../../asset/uploads/resep/<?= htmlspecialchars($data['resep_obat']); ?>" target="_blank" title="Klik untuk memperbesar gambar">
+                                        <img src="../../asset/uploads/resep/<?= htmlspecialchars($data['resep_obat']); ?>"
                                              alt="Resep Obat Pelanggan"
                                              class="img-fluid rounded border  resep-preview">
                                     </a>
                                     <div class="form-text mt-2">
                                         <i class="bi bi-zoom-in"></i> Klik gambar untuk membuka ukuran penuh di tab baru
                                     </div>
-                                <?php else : ?>
+                                <?php } else { ?>
                                     <div class="py-5 text-muted fw-semibold">Pelanggan tidak melampirkan foto resep.</div>
-                                <?php endif; ?>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -241,13 +230,13 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
                                         <td>
                                             <select name="id_obat[]" class="form-select select-obat">
                                                 <option value="" data-harga="0" selected disabled>-- Pilih Obat --</option>
-                                                <?php foreach ($daftar_obat as $obt) : ?>
+                                                <?php foreach ($daftar_obat as $obt) { ?>
                                                     <option value="<?= $obt['id_obat']; ?>"
                                                             data-harga="<?= $obt['harga']; ?>"
                                                             <?= ($obt['total_stok'] <= 0) ? 'disabled' : ''; ?>>
                                                         <?= htmlspecialchars($obt['nama_obat']); ?> (Stok: <?= $obt['total_stok']; ?> <?= htmlspecialchars($obt['satuan']); ?>)
                                                     </option>
-                                                <?php endforeach; ?>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                         <td>
@@ -286,8 +275,8 @@ $daftar_obat = mysqli_fetch_all($query_daftar_obat, MYSQLI_ASSOC);
                             <button type="submit" name="tolak_pesanan" id="btn-tolak" class="btn btn-danger fw-bold px-4 py-2" style="border-radius: 10px;">
                                 <i class="bi bi-x-circle"></i> Tolak Pesanan
                             </button>
-                            <button type="submit" name="verifikasi_pesanan" id="btn-verifikasi" class="inv-btn">
-                                <i class="bi bi-check-circle"></i> Verifikasi & Kirim Tagihan
+                            <button type="submit" name="verifikasi_pesanan" id="btn-verifikasi" class="btn btn-primary fw-bold py-2" style="border-radius: 10px;">
+                                <i class="bi bi-check-circle"></i> Verifikasi
                             </button>
                         </div>
                     </form>

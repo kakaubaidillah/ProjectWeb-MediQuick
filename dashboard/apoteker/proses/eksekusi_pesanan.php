@@ -11,7 +11,7 @@ if (empty($idapoteker) || $role !== "apoteker") {
     exit();
 }
 
-$id_pesanan = mysqli_real_escape_string($conn, $_POST['id_pesanan'] ?? '');
+$id_pesanan = $_POST['id_pesanan'] ?? '';
 
 if (empty($id_pesanan)) {
     header("Location: ../dashboard_apoteker.php");
@@ -19,10 +19,10 @@ if (empty($id_pesanan)) {
 }
 
 // ==========================================================
-// 1. PROSES TOLAK PESANAN / RESEP
+// 1. PROSES TOLAK PESANAN / RESEP (Prepared Statement)
 // ==========================================================
 if (isset($_POST['tolak_pesanan'])) {
-    $catatan_apoteker = mysqli_real_escape_string($conn, trim($_POST['catatan_apoteker'] ?? ''));
+    $catatan_apoteker = trim($_POST['catatan_apoteker'] ?? '');
 
     if (empty($catatan_apoteker)) {
         $_SESSION['proses_error'] = "Harap isi catatan alasan penolakan sebelum menolak pesanan!";
@@ -30,13 +30,17 @@ if (isset($_POST['tolak_pesanan'])) {
         exit();
     }
 
-    $sql_tolak = "UPDATE pesanan 
-                  SET status = 'ditolak', 
-                      id_apoteker = '$idapoteker', 
-                      catatan_apoteker = '$catatan_apoteker' 
-                  WHERE id_pesanan = '$id_pesanan'";
+    $status_tolak = 'ditolak';
+    $stmt_tolak = mysqli_prepare($conn, "UPDATE pesanan 
+                                         SET status = ?, 
+                                             id_apoteker = ?, 
+                                             catatan_apoteker = ? 
+                                         WHERE id_pesanan = ?");
+    mysqli_stmt_bind_param($stmt_tolak, "sisi", $status_tolak, $idapoteker, $catatan_apoteker, $id_pesanan);
+    $eksekusi_tolak = mysqli_stmt_execute($stmt_tolak);
+    mysqli_stmt_close($stmt_tolak);
 
-    if (mysqli_query($conn, $sql_tolak)) {
+    if ($eksekusi_tolak) {
         echo "<script>
                 alert('Pesanan berhasil ditolak dan catatan telah dikirim ke pelanggan.');
                 window.location.href = '../dashboard_apoteker.php';
@@ -53,7 +57,7 @@ if (isset($_POST['tolak_pesanan'])) {
 // 2. PROSES VERIFIKASI RESEP, SIMPAN DETAIL PESANAN & POTONG STOK
 // ==========================================================
 if (isset($_POST['verifikasi_pesanan'])) {
-    $catatan_apoteker = mysqli_real_escape_string($conn, trim($_POST['catatan_apoteker'] ?? ''));
+    $catatan_apoteker = trim($_POST['catatan_apoteker'] ?? '');
     $arr_id_obat      = $_POST['id_obat'] ?? [];
     $arr_jumlah       = $_POST['jumlah'] ?? [];
 
@@ -66,9 +70,9 @@ if (isset($_POST['verifikasi_pesanan'])) {
     $total_harga = 0;
     $item_valid  = [];
 
-    // Validasi ketersediaan stok seluruh item terlebih dahulu
+    // Validasi ketersediaan stok seluruh item terlebih dahulu menggunakan Prepared Statement
     for ($i = 0; $i < count($arr_id_obat); $i++) {
-        $id_obat = mysqli_real_escape_string($conn, $arr_id_obat[$i]);
+        $id_obat = $arr_id_obat[$i];
         $jumlah  = (int) $arr_jumlah[$i];
 
         if ($jumlah <= 0) {
@@ -77,9 +81,13 @@ if (isset($_POST['verifikasi_pesanan'])) {
             exit();
         }
 
-        // Ambil harga satuan & nama obat
-        $q_obat = mysqli_query($conn, "SELECT nama_obat, harga FROM obat WHERE id_obat = '$id_obat'");
-        $d_obat = mysqli_fetch_assoc($q_obat);
+        // A. Ambil harga satuan & nama obat
+        $stmt_obat = mysqli_prepare($conn, "SELECT nama_obat, harga FROM obat WHERE id_obat = ?");
+        mysqli_stmt_bind_param($stmt_obat, "i", $id_obat);
+        mysqli_stmt_execute($stmt_obat);
+        $res_obat = mysqli_stmt_get_result($stmt_obat);
+        $d_obat   = mysqli_fetch_assoc($res_obat);
+        mysqli_stmt_close($stmt_obat);
 
         if (!$d_obat) {
             $_SESSION['proses_error'] = "Data obat tidak ditemukan.";
@@ -87,13 +95,18 @@ if (isset($_POST['verifikasi_pesanan'])) {
             exit();
         }
 
-        // Cek total stok yang tersedia dan belum kedaluwarsa
-        $q_stok = mysqli_query($conn, "SELECT COALESCE(SUM(jumlah_stok), 0) AS total_tersedia 
-                                       FROM stok_obat 
-                                       WHERE id_obat = '$id_obat' 
-                                         AND jumlah_stok > 0 
-                                         AND tanggal_kadaluarsa >= CURDATE()");
-        $d_stok        = mysqli_fetch_assoc($q_stok);
+        // B. Cek total stok yang tersedia dan belum kedaluwarsa
+        $stmt_stok = mysqli_prepare($conn, "SELECT COALESCE(SUM(jumlah_stok), 0) AS total_tersedia 
+                                             FROM stok_obat 
+                                             WHERE id_obat = ? 
+                                               AND jumlah_stok > 0 
+                                               AND tanggal_kadaluarsa >= CURDATE()");
+        mysqli_stmt_bind_param($stmt_stok, "i", $id_obat);
+        mysqli_stmt_execute($stmt_stok);
+        $res_stok      = mysqli_stmt_get_result($stmt_stok);
+        $d_stok        = mysqli_fetch_assoc($res_stok);
+        mysqli_stmt_close($stmt_stok);
+
         $stok_tersedia = (int) $d_stok['total_tersedia'];
 
         if ($stok_tersedia < $jumlah) {
@@ -114,7 +127,7 @@ if (isset($_POST['verifikasi_pesanan'])) {
         ];
     }
 
-    // Simpan ke detail_pesanan dan potong stok per batch (FEFO)
+    // Simpan ke detail_pesanan dan potong stok per batch (FEFO) menggunakan Prepared Statements
     foreach ($item_valid as $item) {
         $id_obt = $item['id_obat'];
         $jml    = $item['jumlah'];
@@ -122,19 +135,25 @@ if (isset($_POST['verifikasi_pesanan'])) {
         $sub    = $item['subtotal'];
 
         // A. Insert ke tabel `detail_pesanan`
-        mysqli_query($conn, "INSERT INTO detail_pesanan (id_pesanan, id_obat, jumlah, harga_satuan, subtotal) 
-                             VALUES ('$id_pesanan', '$id_obt', '$jml', '$hrg', '$sub')");
+        $stmt_ins_det = mysqli_prepare($conn, "INSERT INTO detail_pesanan (id_pesanan, id_obat, jumlah, harga_satuan, subtotal) 
+                                               VALUES (?, ?, ?, ?, ?)");
+        mysqli_stmt_bind_param($stmt_ins_det, "iiidd", $id_pesanan, $id_obt, $jml, $hrg, $sub);
+        mysqli_stmt_execute($stmt_ins_det);
+        mysqli_stmt_close($stmt_ins_det);
 
         // B. Potong stok berdasarkan tanggal kedaluwarsa terdekat (FEFO)
-        $sisa_potong = $jml;
-        $q_batches   = mysqli_query($conn, "SELECT id_stok, jumlah_stok 
-                                            FROM stok_obat 
-                                            WHERE id_obat = '$id_obt' 
-                                              AND jumlah_stok > 0 
-                                              AND tanggal_kadaluarsa >= CURDATE() 
-                                            ORDER BY tanggal_kadaluarsa ASC");
+        $stmt_batches = mysqli_prepare($conn, "SELECT id_stok, jumlah_stok 
+                                               FROM stok_obat 
+                                               WHERE id_obat = ? 
+                                                 AND jumlah_stok > 0 
+                                                 AND tanggal_kadaluarsa >= CURDATE() 
+                                               ORDER BY tanggal_kadaluarsa ASC");
+        mysqli_stmt_bind_param($stmt_batches, "i", $id_obt);
+        mysqli_stmt_execute($stmt_batches);
+        $res_batches = mysqli_stmt_get_result($stmt_batches);
 
-        while ($batch = mysqli_fetch_assoc($q_batches)) {
+        $sisa_potong = $jml;
+        while ($batch = mysqli_fetch_assoc($res_batches)) {
             if ($sisa_potong <= 0) break;
 
             $id_stok_batch = $batch['id_stok'];
@@ -142,24 +161,39 @@ if (isset($_POST['verifikasi_pesanan'])) {
 
             if ($stok_batch >= $sisa_potong) {
                 $stok_baru = $stok_batch - $sisa_potong;
-                mysqli_query($conn, "UPDATE stok_obat SET jumlah_stok = '$stok_baru' WHERE id_stok = '$id_stok_batch'");
+                
+                $stmt_up_stok = mysqli_prepare($conn, "UPDATE stok_obat SET jumlah_stok = ? WHERE id_stok = ?");
+                mysqli_stmt_bind_param($stmt_up_stok, "ii", $stok_baru, $id_stok_batch);
+                mysqli_stmt_execute($stmt_up_stok);
+                mysqli_stmt_close($stmt_up_stok);
+
                 $sisa_potong = 0;
             } else {
-                mysqli_query($conn, "UPDATE stok_obat SET jumlah_stok = 0 WHERE id_stok = '$id_stok_batch'");
+                $stok_nol = 0;
+                $stmt_up_stok = mysqli_prepare($conn, "UPDATE stok_obat SET jumlah_stok = ? WHERE id_stok = ?");
+                mysqli_stmt_bind_param($stmt_up_stok, "ii", $stok_nol, $id_stok_batch);
+                mysqli_stmt_execute($stmt_up_stok);
+                mysqli_stmt_close($stmt_up_stok);
+
                 $sisa_potong -= $stok_batch;
             }
         }
+        mysqli_stmt_close($stmt_batches);
     }
 
     // C. Update status tabel `pesanan` menjadi 'belum bayar'
-    $sql_verif = "UPDATE pesanan 
-                  SET status = 'belum bayar', 
-                      id_apoteker = '$idapoteker', 
-                      total_harga = '$total_harga', 
-                      catatan_apoteker = '$catatan_apoteker' 
-                  WHERE id_pesanan = '$id_pesanan'";
+    $status_belum_bayar = 'belum bayar';
+    $stmt_verif = mysqli_prepare($conn, "UPDATE pesanan 
+                                         SET status = ?, 
+                                             id_apoteker = ?, 
+                                             total_harga = ?, 
+                                             catatan_apoteker = ? 
+                                         WHERE id_pesanan = ?");
+    mysqli_stmt_bind_param($stmt_verif, "sidsi", $status_belum_bayar, $idapoteker, $total_harga, $catatan_apoteker, $id_pesanan);
+    $eksekusi_verif = mysqli_stmt_execute($stmt_verif);
+    mysqli_stmt_close($stmt_verif);
 
-    if (mysqli_query($conn, $sql_verif)) {
+    if ($eksekusi_verif) {
         echo "<script>
                 alert('Pesanan BERHASIL diverifikasi!');
                 window.location.href = '../dashboard_apoteker.php';
@@ -168,7 +202,7 @@ if (isset($_POST['verifikasi_pesanan'])) {
     } else {
         echo "<script>
                 alert('Pesanan GAGAL diverifikasi!'); 
-                window.location.href='../proses_pesanan.php';
+                window.location.href='../proses_pesanan.php?id=" . urlencode($id_pesanan) . "';
               </script>";
         exit();
     }

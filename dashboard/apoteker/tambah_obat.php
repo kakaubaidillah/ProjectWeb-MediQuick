@@ -7,16 +7,40 @@ $idapoteker = $_SESSION['id'] ?? "";
 $role       = $_SESSION['role'] ?? "";
 
 // if (empty($idapoteker) || $role !== "apoteker") {
-//     echo "<script>alert('Mohon Login terlebih dahulu!'); 
-//                 window.location.href='../../login/login.php';
-//               </script>";
+//     header("Location: ../../login/login.php");
 //     exit();
 // }
 
+// Ambil pesan error jika ada session error dari proses sebelumnya
+if(isset($_SESSION['tambah_error'])) {
+    $pesan_error = $_SESSION['tambah_error'] ?? "";
+    unset($_SESSION['tambah_error']);
+}
 
+// 1. Ambil daftar kategori dinamis dari database + cadangan default menggunakan Prepared Statement
+$daftar_kategori = ["Analgesik", "Antibiotik", "Antialergi", "Antiseptik", "Vitamin & Suplemen", "Obat batuk dan pilek", "Obat saluran pencernaan"];
+$stmt_kat = mysqli_prepare($conn, "SELECT DISTINCT kategori FROM obat WHERE kategori != '' ORDER BY kategori ASC");
+mysqli_stmt_execute($stmt_kat);
+$result_kat = mysqli_stmt_get_result($stmt_kat);
+while ($row_kat = mysqli_fetch_assoc($result_kat)) {
+    $daftar_kategori[] = $row_kat['kategori'];
+}
+mysqli_stmt_close($stmt_kat);
+$daftar_kategori = array_unique($daftar_kategori);
+
+// 2. Ambil daftar satuan dinamis dari database + cadangan default menggunakan Prepared Statement
+$daftar_satuan = ["Strip", "Tablet", "Kapsul", "Botol", "Tube", "Box", "Sachet", "Pcs"];
+$stmt_sat = mysqli_prepare($conn, "SELECT DISTINCT satuan FROM obat WHERE satuan != '' ORDER BY satuan ASC");
+mysqli_stmt_execute($stmt_sat);
+$result_sat = mysqli_stmt_get_result($stmt_sat);
+while ($row_sat = mysqli_fetch_assoc($result_sat)) {
+    $daftar_satuan[] = $row_sat['satuan'];
+}
+mysqli_stmt_close($stmt_sat);
+$daftar_satuan = array_unique($daftar_satuan);
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 
 <head>
     <meta charset="UTF-8">
@@ -27,29 +51,11 @@ $role       = $_SESSION['role'] ?? "";
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
     <title>Tambah Obat - MediQuick</title>
-    <style>
-        .inv-btn {
-            padding: 10px 24px;
-            background-color: #4fb0f0;
-            color: white;
-            border-radius: 10px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .inv-btn:hover {
-            background-color: #008afc;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
     <!-- NAVBAR -->
-    <nav class="navbar" style="background-color: #4fb0f0;">
+    <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
             <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
 
@@ -78,11 +84,11 @@ $role       = $_SESSION['role'] ?? "";
                             <a class="nav-link active fw-bold" href="inventory.php">Inventory</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="riwayat_prosesobat.php">Riwayat</a>
+                            <a class="nav-link" href="riwayat_pesanan.php">Riwayat</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php"
-                                onclick="return confirm('Yakin Untuk Logout?')">Logout</a>
+                            <a class="nav-link text-danger fw-bold" href="../../login/proses/access_logout.php"
+                                onclick="return confirm('Yakin Untuk Logout?')">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -102,9 +108,9 @@ $role       = $_SESSION['role'] ?? "";
         <div class="container-fluid p-2">
             <div class="row g-3 px-2">
                 <div class="card p-4 shadow-sm">
-                    <?php if (!empty($pesan_error)) : ?>
-                        <div class="alert alert-danger"><?= $pesan_error ?></div>
-                    <?php endif; ?>
+                    <?php if (!empty($pesan_error)) { ?>
+                        <div class="alert alert-danger"><?= htmlspecialchars($pesan_error); ?></div>
+                    <?php } ?>
 
                     <form method="POST" action="proses/eksekusi_tambah_obat.php" enctype="multipart/form-data" id="form-tambah-obat">
                         <!-- Bagian 1: Data Induk Obat -->
@@ -122,32 +128,29 @@ $role       = $_SESSION['role'] ?? "";
                                     <option value="1">Wajib Resep Dokter</option>
                                 </select>
                             </div>
+                            
+                            <!-- Dropdown Kategori Dinamis -->
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Kategori <span class="text-danger">*</span></label>
                                 <select name="kategori" class="form-select" required>
                                     <option value="" selected disabled>-- Pilih Kategori --</option>
-                                    <option value="Analgesik">Analgesik</option>
-                                    <option value="Antibiotik">Antibiotik</option>
-                                    <option value="Antialergi">Antialergi</option>
-                                    <option value="Antiseptik">Antiseptik</option>
-                                    <option value="Vitamin & Suplemen">Vitamin & Suplemen</option>
-                                    <option value="Obat batuk dan pilek">Obat batuk dan pilek</option>
-                                    <option value="Obat saluran pencernaan">Obat saluran pencernaan</option>
+                                    <?php foreach ($daftar_kategori as $kat) { ?>
+                                        <option value="<?= htmlspecialchars($kat); ?>"><?= htmlspecialchars($kat); ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
+
+                            <!-- Dropdown Satuan Dinamis -->
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Satuan <span class="text-danger">*</span></label>
                                 <select name="satuan" class="form-select" required>
                                     <option value="" selected disabled>-- Pilih Satuan --</option>
-                                    <option value="Strip">Strip</option>
-                                    <option value="Tablet">Tablet</option>
-                                    <option value="Kapsul">Kapsul</option>
-                                    <option value="Botol">Botol</option>
-                                    <option value="Tube">Tube</option>
-                                    <option value="Box">Box</option>
-                                    <option value="Sachet">Sachet</option>
+                                    <?php foreach ($daftar_satuan as $sat) { ?>
+                                        <option value="<?= htmlspecialchars($sat); ?>"><?= htmlspecialchars($sat); ?></option>
+                                    <?php } ?>
                                 </select>
                             </div>
+
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold">Harga (Rp) <span class="text-danger">*</span></label>
                                 <input type="number" name="harga" class="form-control" min="0" step="100" placeholder="Contoh: 15000" required>
