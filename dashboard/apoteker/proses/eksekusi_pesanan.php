@@ -1,8 +1,7 @@
 <?php
 session_start();
-include __DIR__ . "/../../../config/connection.php";
+include __DIR__ . "/../../../config/connect.php";
 
-// Validasi session login & role apoteker
 $idapoteker = $_SESSION['id'] ?? "";
 $role       = $_SESSION['role'] ?? "";
 
@@ -18,9 +17,7 @@ if (empty($id_pesanan)) {
     exit();
 }
 
-// ==========================================================
-// 1. PROSES TOLAK PESANAN / RESEP (Prepared Statement)
-// ==========================================================
+// PROSES TOLAK RESEP
 if (isset($_POST['tolak_pesanan'])) {
     $catatan_apoteker = trim($_POST['catatan_apoteker'] ?? '');
 
@@ -53,9 +50,7 @@ if (isset($_POST['tolak_pesanan'])) {
     }
 }
 
-// ==========================================================
-// 2. PROSES VERIFIKASI RESEP, SIMPAN DETAIL PESANAN & POTONG STOK
-// ==========================================================
+// VERIFIKASI RESEP & SIMPAN DETAIL PESANAN 
 if (isset($_POST['verifikasi_pesanan'])) {
     $catatan_apoteker = trim($_POST['catatan_apoteker'] ?? '');
     $arr_id_obat      = $_POST['id_obat'] ?? [];
@@ -70,7 +65,6 @@ if (isset($_POST['verifikasi_pesanan'])) {
     $total_harga = 0;
     $item_valid  = [];
 
-    // Validasi ketersediaan stok seluruh item terlebih dahulu menggunakan Prepared Statement
     for ($i = 0; $i < count($arr_id_obat); $i++) {
         $id_obat = $arr_id_obat[$i];
         $jumlah  = (int) $arr_jumlah[$i];
@@ -81,7 +75,6 @@ if (isset($_POST['verifikasi_pesanan'])) {
             exit();
         }
 
-        // A. Ambil harga satuan & nama obat
         $stmt_obat = mysqli_prepare($conn, "SELECT nama_obat, harga FROM obat WHERE id_obat = ?");
         mysqli_stmt_bind_param($stmt_obat, "i", $id_obat);
         mysqli_stmt_execute($stmt_obat);
@@ -95,7 +88,6 @@ if (isset($_POST['verifikasi_pesanan'])) {
             exit();
         }
 
-        // B. Cek total stok yang tersedia dan belum kedaluwarsa
         $stmt_stok = mysqli_prepare($conn, "SELECT COALESCE(SUM(jumlah_stok), 0) AS total_tersedia 
                                              FROM stok_obat 
                                              WHERE id_obat = ? 
@@ -127,15 +119,12 @@ if (isset($_POST['verifikasi_pesanan'])) {
         ];
     }
 
-    // Simpan rincian pesanan ke detail_pesanan menggunakan Prepared Statements
-    // CATATAN: Pengurangan stok TIDAK dilakukan di sini. Stok dikurangi di sisi pelanggan setelah pembayaran (status 'dibayar').
     foreach ($item_valid as $item) {
         $id_obt = $item['id_obat'];
         $jml    = $item['jumlah'];
         $hrg    = $item['harga_satuan'];
         $sub    = $item['subtotal'];
 
-        // A. Insert ke tabel `detail_pesanan`
         $stmt_ins_det = mysqli_prepare($conn, "INSERT INTO detail_pesanan (id_pesanan, id_obat, jumlah, harga_satuan, subtotal) 
                                                VALUES (?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt_ins_det, "iiidd", $id_pesanan, $id_obt, $jml, $hrg, $sub);
@@ -143,7 +132,7 @@ if (isset($_POST['verifikasi_pesanan'])) {
         mysqli_stmt_close($stmt_ins_det);
     }
 
-    // C. Update status tabel `pesanan` menjadi 'belum bayar'
+    // Update status tabel 
     $status_belum_bayar = 'belum bayar';
     $stmt_verif = mysqli_prepare($conn, "UPDATE pesanan 
                                          SET status = ?, 
@@ -170,7 +159,6 @@ if (isset($_POST['verifikasi_pesanan'])) {
     }
 }
 
-// Jika diakses langsung tanpa menekan tombol submit
 header("Location: ../dashboard_apoteker.php");
 exit();
 ?>

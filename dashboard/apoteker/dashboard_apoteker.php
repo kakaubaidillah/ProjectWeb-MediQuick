@@ -64,14 +64,15 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
     <title>Dashboard Apoteker - MediQuick</title>
 </head>
 
 <body>
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
+            
+            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
@@ -112,10 +113,9 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
             <p class="text-muted mb-0">Ringkasan Aktivitas Apoteker</p>
         </div>
 
-        <!-- Card Statistik START -->
         <div class="container-fluid p-2">
             <div class="row g-3 mb-3">
-                <!-- Kartu 1: Pesanan Selesai (status = 'dibayar') -->
+                <!-- Pesanan Selesai -->
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
                         <div class="d-flex justify-content-between align-items-center">
@@ -128,7 +128,7 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                     </div>
                 </div>
 
-                <!-- Kartu 2: Jenis Obat Tersedia -->
+                <!-- Jenis Obat Tersedia -->
                 <div class="col-12 col-lg-6">
                     <div class="card p-3 h-100">
                         <div class="d-flex justify-content-between align-items-center">
@@ -142,9 +142,8 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                 </div>
             </div>
         </div>
-        <!-- Card Statistik END -->
 
-        <!-- Card Notifikasi Stok Obat -->
+        <!-- Notifikasi Stok Obat -->
         <div class="container-fluid p-2">
             <div class="row g-3 px-2">
                 <div class="card p-4">
@@ -202,9 +201,8 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                 </div>
             </div>
         </div>
-        <!-- Card Notifikasi Stok Obat END -->
 
-        <!-- Card List Antrean Verifikasi Resep START -->
+        <!-- Antrean Verifikasi Resep -->
         <div class="container-fluid p-2">
             <div class="row g-3 px-2">
                 <div class="card p-4">
@@ -252,7 +250,6 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
                 </div>
             </div>
         </div>
-        <!-- Card List Antrean Verifikasi Resep END -->
     </div>
 
     <?php

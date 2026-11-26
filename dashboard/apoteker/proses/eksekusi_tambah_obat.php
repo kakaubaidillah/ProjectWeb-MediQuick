@@ -23,7 +23,6 @@ if (isset($_POST['simpan'])) {
     $tanggal_masuk      = $_POST['tanggal_masuk'] ?? '';
     $tanggal_kadaluarsa = $_POST['tanggal_kadaluarsa'] ?? '';
 
-    // Upload gambar obat jika ada file yang dipilih
     $nama_gambar = "";
     if (!empty($_FILES['gambar_obat']['name'])) {
         $folder_tujuan = __DIR__ . "/../../../asset/uploads/obat/";
@@ -34,21 +33,18 @@ if (isset($_POST['simpan'])) {
         move_uploaded_file($_FILES['gambar_obat']['tmp_name'], $folder_tujuan . $nama_gambar);
     }
 
-    // 1. Cek apakah nama_obat sudah terdaftar di tabel 'obat' menggunakan Prepared Statement
     $stmt_cek = mysqli_prepare($conn, "SELECT id_obat FROM obat WHERE nama_obat = ? LIMIT 1");
     mysqli_stmt_bind_param($stmt_cek, "s", $nama_obat);
     mysqli_stmt_execute($stmt_cek);
     $result_cek = mysqli_stmt_get_result($stmt_cek);
 
     if (mysqli_num_rows($result_cek) > 0) {
-        // Jika obat sudah ada, ambil id_obat-nya
         $data_obat = mysqli_fetch_assoc($result_cek);
         $id_obat   = $data_obat['id_obat'];
         mysqli_stmt_close($stmt_cek);
     } else {
         mysqli_stmt_close($stmt_cek);
 
-        // Jika obat belum ada, insert data baru ke tabel 'obat' menggunakan Prepared Statement
         $stmt_ins_obat = mysqli_prepare($conn, "INSERT INTO obat (nama_obat, kategori, satuan, harga, butuh_resep, gambar_obat) 
                                                 VALUES (?, ?, ?, ?, ?, ?)");
         mysqli_stmt_bind_param($stmt_ins_obat, "sssdis", $nama_obat, $kategori, $satuan, $harga, $butuh_resep, $nama_gambar);
@@ -67,7 +63,6 @@ if (isset($_POST['simpan'])) {
         }
     }
 
-    // 2. Insert data batch & stok ke tabel 'stok_obat' menggunakan Prepared Statement
     $stmt_ins_stok = mysqli_prepare($conn, "INSERT INTO stok_obat (id_obat, batch, jumlah_stok, tanggal_masuk, tanggal_kadaluarsa) 
                                             VALUES (?, ?, ?, ?, ?)");
     mysqli_stmt_bind_param($stmt_ins_stok, "isisss", $id_obat, $batch, $jumlah_stok, $tanggal_masuk, $tanggal_kadaluarsa);

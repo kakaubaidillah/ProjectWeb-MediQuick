@@ -2,7 +2,6 @@
 session_start();
 include __DIR__ . "/../../../config/connect.php";
 
-// Validasi session login & role apoteker
 $idapoteker = $_SESSION['id'] ?? "";
 $role       = $_SESSION['role'] ?? "";
 
@@ -13,9 +12,7 @@ if (empty($idapoteker) || $role !== "apoteker") {
     exit();
 }
 
-// ==========================================
 // 1. PROSES UPDATE DATA OBAT & BATCH STOK
-// ==========================================
 if (isset($_POST['update'])) {
     $id_obat            = $_POST['id_obat'] ?? '';
     $id_stok            = $_POST['id_stok'] ?? '';
@@ -32,7 +29,6 @@ if (isset($_POST['update'])) {
     $tanggal_masuk      = $_POST['tanggal_masuk'] ?? '';
     $tanggal_kadaluarsa = $_POST['tanggal_kadaluarsa'] ?? '';
 
-    // Cek apakah apoteker mengunggah gambar baru
     $nama_gambar = $gambar_lama;
     if (!empty($_FILES['gambar_obat']['name'])) {
         $folder_tujuan = __DIR__ . "/../../../asset/uploads/obat/";
@@ -42,7 +38,6 @@ if (isset($_POST['update'])) {
 
         $nama_file_baru = time() . "_" . basename($_FILES['gambar_obat']['name']);
         if (move_uploaded_file($_FILES['gambar_obat']['tmp_name'], $folder_tujuan . $nama_file_baru)) {
-            // Hapus file gambar lama jika ada di folder
             if (!empty($gambar_lama) && file_exists($folder_tujuan . $gambar_lama)) {
                 unlink($folder_tujuan . $gambar_lama);
             }
@@ -50,7 +45,6 @@ if (isset($_POST['update'])) {
         }
     }
 
-    // A. Update tabel 'obat' menggunakan Prepared Statement
     $stmt_up_obat = mysqli_prepare($conn, "UPDATE obat SET 
                                            nama_obat   = ?,
                                            kategori    = ?,
@@ -63,7 +57,6 @@ if (isset($_POST['update'])) {
     $eksekusi_obat = mysqli_stmt_execute($stmt_up_obat);
     mysqli_stmt_close($stmt_up_obat);
 
-    // B. Update tabel 'stok_obat' menggunakan Prepared Statement
     $stmt_up_stok = mysqli_prepare($conn, "UPDATE stok_obat SET 
                                            batch              = ?,
                                            jumlah_stok        = ?,
@@ -83,23 +76,19 @@ if (isset($_POST['update'])) {
     }
 }
 
-// ==========================================
 // 2. PROSES HAPUS DATA BATCH / OBAT
-// ==========================================
 if (isset($_POST['hapus'])) {
     $id_obat     = $_POST['id_obat'] ?? '';
     $id_stok     = $_POST['id_stok'] ?? '';
     $batch       = $_POST['batch'] ?? '';
     $gambar_lama = $_POST['gambar_lama'] ?? '';
 
-    // A. Hapus data batch spesifik di tabel 'stok_obat' menggunakan Prepared Statement
     $stmt_hapus_stok = mysqli_prepare($conn, "DELETE FROM stok_obat WHERE id_stok = ?");
     mysqli_stmt_bind_param($stmt_hapus_stok, "i", $id_stok);
     $eksekusi_hapus_stok = mysqli_stmt_execute($stmt_hapus_stok);
     mysqli_stmt_close($stmt_hapus_stok);
 
     if ($eksekusi_hapus_stok) {
-        // B. Cek apakah obat ini masih punya batch lain di tabel 'stok_obat' menggunakan Prepared Statement
         $stmt_cek_sisa = mysqli_prepare($conn, "SELECT id_stok FROM stok_obat WHERE id_obat = ?");
         mysqli_stmt_bind_param($stmt_cek_sisa, "i", $id_obat);
         mysqli_stmt_execute($stmt_cek_sisa);
@@ -107,7 +96,7 @@ if (isset($_POST['hapus'])) {
         $sisa_count = mysqli_num_rows($res_sisa_batch);
         mysqli_stmt_close($stmt_cek_sisa);
 
-        // Jika sudah tidak ada batch tersisa, hapus juga data induk di tabel 'obat' beserta file gambarnya
+        // Hapus Obat jika stok Batch habis
         if ($sisa_count == 0) {
             $stmt_hapus_obat = mysqli_prepare($conn, "DELETE FROM obat WHERE id_obat = ?");
             mysqli_stmt_bind_param($stmt_hapus_obat, "i", $id_obat);

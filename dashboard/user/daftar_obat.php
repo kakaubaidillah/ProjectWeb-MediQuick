@@ -14,7 +14,7 @@ if ($id !== '') {
 
 $kategori_aktif = trim($_GET['kategori'] ?? '');
 
-// Ambil daftar kategori unik untuk tombol/pilihan filter
+// daftar kategori 
 $daftar_kategori = [];
 $q_kategori = mysqli_query($conn, "SELECT DISTINCT kategori FROM obat WHERE kategori IS NOT NULL AND kategori != '' ORDER BY kategori ASC");
 if ($q_kategori) {
@@ -23,7 +23,7 @@ if ($q_kategori) {
     }
 }
 
-// Ambil daftar obat (bisa difilter berdasarkan kategori jika dipilih)
+// daftar obat berdasarkan kategori
 if ($kategori_aktif !== '') {
     $stmt_obat = mysqli_prepare($conn, "SELECT o.*,
                COALESCE((SELECT SUM(s.jumlah_stok) FROM stok_obat s
@@ -51,6 +51,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
     <title>Daftar Obat - MediQuick</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
     <style>
         .obat-grid {
             display: grid;
@@ -92,7 +93,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
 <body class="bg-light">
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="user.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="user.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler"
@@ -148,7 +149,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
     </div>
     <hr>
 
-    <!-- Filter Kategori: Semua & Per Kategori -->
+    <!-- Filter Kategori -->
     <div class="container mb-3">
         <div class="d-flex flex-wrap align-items-center gap-2">
             <span class="small fw-semibold text-muted me-1">Kategori:</span>
@@ -165,7 +166,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
         </div>
     </div>
 
-    <!-- Daftar Obat Berurutan ke Bawah (Grid) -->
+    <!-- Daftar Obat -->
     <div class="container mt-3 mb-5">
         <?php if ($jumlah_obat > 0){ ?>
             <div class="obat-grid">

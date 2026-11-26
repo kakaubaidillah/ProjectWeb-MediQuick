@@ -94,15 +94,16 @@ function kartu_pesanan($p, $badge, $rupiah)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MEDIQUICK</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
+    <title>Riwayat Pesanan - MediQuick</title>
 </head>
 
 <body>
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="#">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="user.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler"
@@ -150,7 +151,7 @@ function kartu_pesanan($p, $badge, $rupiah)
 
     <div class="container mt-3 mb-4">
 
-        <!-- Kelompok 1: Menunggu / Belum Bayar -->
+        <!-- Menunggu / Belum Bayar -->
         <div class="card shadow-sm mb-4" style="max-width: 900px; border-color:#1591DC;">
             <div class="card-header text-white fw-semibold" style="background-color:#1591DC;">
                 <i class="bi bi-hourglass-split"></i> Pesanan Berjalan
@@ -165,7 +166,7 @@ function kartu_pesanan($p, $badge, $rupiah)
             </div>
         </div>
 
-        <!-- Kelompok 2: Dibayar / Ditolak / Dibatalkan -->
+        <!-- Dibayar / Ditolak / Dibatalkan -->
         <div class="card shadow-sm" style="max-width: 900px; border-color:#2C5EAD;">
             <div class="card-header text-white fw-semibold" style="background-color:#2C5EAD;">
                 <i class="bi bi-clock-history"></i> Pesanan Selesai

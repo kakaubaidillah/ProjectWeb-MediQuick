@@ -14,7 +14,7 @@ if ($id_pesanan <= 0) {
     exit();
 }
 
-// Ambil data pesanan milik pelanggan yang sedang login
+// Data Pelanggan
 $stmt = mysqli_prepare($conn, "SELECT *, TIMESTAMPDIFF(SECOND, NOW(), batas_pembayaran) AS sisa_detik FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ?");
 mysqli_stmt_bind_param($stmt, "ii", $id_pesanan, $id_pelanggan);
 mysqli_stmt_execute($stmt);
@@ -25,8 +25,7 @@ if (!$pesanan) {
     exit();
 }
 
-// Auto-cancel jika status 'belum bayar' dan batas_pembayaran sudah lewat.
-// Waktu dihitung oleh MySQL (NOW()) supaya sama dengan waktu yang dipakai saat pesanan dibuat.
+// Batas pembayaram
 $sisa_detik = 0;
 if ($pesanan['status'] === 'belum bayar' && $pesanan['sisa_detik'] !== null) {
     if ((int) $pesanan['sisa_detik'] <= 0) {
@@ -39,7 +38,7 @@ if ($pesanan['status'] === 'belum bayar' && $pesanan['sisa_detik'] !== null) {
     }
 }
 
-// Ambil rincian item obat jika sudah ada di detail_pesanan
+// Ambil rincian item obat
 $stmt_detail = mysqli_prepare($conn, "
     SELECT dp.*, o.nama_obat, o.satuan
     FROM detail_pesanan dp
@@ -60,13 +59,14 @@ $is_resep = !empty($pesanan['resep_obat']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <title>Detail Pesanan #<?= $id_pesanan ?> - MediQuick</title>
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
+    <title>Detail Pesanan - MediQuick</title>
 </head>
 <body class="bg-light">
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
             <a class="navbar-brand" href="user.php">
-                <h3 class="fw-bold text-white mb-0">MediQuick</h3>
+                <h3 class="fw-bold text-white mb-0"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</h3>
             </a>
             <a href="user.php" class="btn btn-outline-light btn-sm fw-semibold">
                 <i class="bi bi-house-door me-1"></i> Beranda

@@ -70,7 +70,7 @@ mysqli_stmt_close($stmt_obat);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
     <title>Verifikasi Resep & Pesanan - MediQuick</title>
     <style>
         .resep-preview {
@@ -85,7 +85,7 @@ mysqli_stmt_close($stmt_obat);
     <!-- NAVBAR -->
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler"
@@ -141,7 +141,7 @@ mysqli_stmt_close($stmt_obat);
                     <div class="alert alert-danger fw-semibold"><?= htmlspecialchars($error_msg); ?></div>
                 <?php } ?>
 
-                <!-- KARTU 1: INFORMASI PESANAN & GAMBAR RESEP PELANGGAN -->
+                <!-- INFORMASI PESANAN & GAMBAR RESEP PELANGGAN -->
                 <div class="card p-4 mb-3 ">
                     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
                         <h5 class="fw-bold mb-0 text-primary">Pesanan Pelanggan</h5>
@@ -149,7 +149,7 @@ mysqli_stmt_close($stmt_obat);
                     </div>
 
                     <div class="row g-4">
-                        <!-- Kolom Kiri: Data Pelanggan & Pengiriman -->
+                        <!-- Data Pelanggan & Pengiriman -->
                         <div class="col-lg-6">
                             <div class="row g-3">
                                 <div class="col-md-6">
@@ -180,7 +180,7 @@ mysqli_stmt_close($stmt_obat);
                             </div>
                         </div>
 
-                        <!-- Kolom Kanan: Preview Gambar Resep -->
+                        <!-- Preview Gambar Resep -->
                         <div class="col-lg-6">
                             <label class="form-label fw-semibold">Foto Resep Dokter dari Pelanggan</label>
                             <div class="border rounded-3 p-3 bg-light text-center">
@@ -201,7 +201,7 @@ mysqli_stmt_close($stmt_obat);
                     </div>
                 </div>
 
-                <!-- KARTU 2: PEMROSESAN RESEP (INPUT OBAT, VERIFIKASI, ATAU TOLAK) -->
+                <!-- PEMROSESAN RESEP (INPUT OBAT, VERIFIKASI, ATAU TOLAK) -->
                 <div class="card p-4 ">
                     <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2">
                         <h5 class="fw-bold mb-0 text-primary">Pemrosesan Obat Berdasarkan Resep</h5>
@@ -269,7 +269,7 @@ mysqli_stmt_close($stmt_obat);
                                 placeholder="Tuliskan aturan pakai obat untuk pelanggan (jika diverifikasi) ATAU alasan penolakan resep (wajib diisi jika pesanan ditolak)..."><?= htmlspecialchars($data['catatan_apoteker'] ?? ''); ?></textarea>
                         </div>
 
-                        <!-- TOMBOL AKSI: TOLAK vs VERIFIKASI -->
+                        <!-- TOMBOL Verifikasi dan Tolak -->
                         <div class="d-flex justify-content-end align-items-center gap-2 pt-3 border-top">
                             <button type="submit" name="tolak_pesanan" id="btn-tolak" class="btn btn-danger fw-bold px-4 py-2" style="border-radius: 10px;">
                                 <i class="bi bi-x-circle"></i> Tolak Pesanan

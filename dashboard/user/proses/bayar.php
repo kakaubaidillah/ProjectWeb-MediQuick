@@ -1,7 +1,7 @@
 <?php
 session_start();
 include __DIR__ . "/../../../config/connect.php";
-// Error SQL jadi exception supaya transaksi bisa di-rollback dengan benar
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 class BayarError extends Exception {}
@@ -14,7 +14,6 @@ if (empty($id_pelanggan) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $id_pesanan = isset($_POST['id_pesanan']) ? (int) $_POST['id_pesanan'] : 0;
 
-// Tampilkan alert lalu kembali ke halaman detail pesanan
 function kembali($pesan, $id_pesanan)
 {
     echo "<script>alert(" . json_encode($pesan) . "); window.location.href='../detail_pesanan.php?id=" . (int) $id_pesanan . "';</script>";
@@ -25,7 +24,6 @@ try {
     mysqli_begin_transaction($conn);
 
     // 1. Kunci baris pesanan (FOR UPDATE) agar klik "Bayar" dua kali / dua tab tidak mengurangi stok dua kali.
-    //    Kadaluarsa dicek oleh MySQL (NOW()) supaya zona waktunya sama dengan saat pesanan dibuat.
     $stmt = mysqli_prepare($conn, "
         SELECT status,
                (batas_pembayaran IS NOT NULL AND batas_pembayaran < NOW()) AS kadaluarsa
@@ -44,7 +42,7 @@ try {
         throw new BayarError("Status pesanan tidak valid untuk pembayaran.");
     }
 
-    // 2. Waktu habis -> batalkan pesanan
+    // 2. Waktu habis
     if ((int) $pesanan['kadaluarsa'] === 1) {
         $stmt_exp = mysqli_prepare($conn, "UPDATE pesanan SET status = 'dibatalkan' WHERE id_pesanan = ? AND status = 'belum bayar'");
         mysqli_stmt_bind_param($stmt_exp, "i", $id_pesanan);
@@ -68,8 +66,7 @@ try {
         throw new BayarError("Pesanan ini belum memiliki daftar obat.");
     }
 
-    // 4. Kurangi stok per obat. Batch yang paling cepat kadaluarsa dipakai lebih dulu (FEFO),
-    //    batch yang sudah kadaluarsa atau kosong dilewati.
+    // 4. Kurangi stok per obat
     $stmt_batch = mysqli_prepare($conn, "
         SELECT id_stok, jumlah_stok
         FROM stok_obat
@@ -107,12 +104,12 @@ try {
         }
 
         if ($sisa > 0) {
-            // Stok tidak cukup (mis. dibeli pelanggan lain lebih dulu) -> semua pengurangan dibatalkan
+            // Stok tidak cukup
             throw new BayarError("Stok '" . $it['nama_obat'] . "' tidak mencukupi. Silakan ubah atau batalkan pesanan.");
         }
     }
 
-    // 5. Stok sudah beres -> tandai dibayar
+    // 5. Tandai dibayar
     $stmt_bayar = mysqli_prepare($conn, "UPDATE pesanan SET status = 'dibayar' WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar'");
     mysqli_stmt_bind_param($stmt_bayar, "ii", $id_pesanan, $id_pelanggan);
     mysqli_stmt_execute($stmt_bayar);

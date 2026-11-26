@@ -81,6 +81,7 @@ if($edit_id > 0){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
     <title>MediQuick</title>
     <style>
         .inv-btn {
@@ -104,17 +105,17 @@ if($edit_id > 0){
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
             <a class="navbar-brand" href="user.php">
-                <h3 class="fw-bold text-white mb-0">MediQuick</h3>
+                <h3 class="fw-bold text-white mb-0"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</h3>
             </a>
 
             <!-- Hamburger Menu -->
-            <button class="navbar-toggler border-light"
+            <button class="navbar-toggler"
                     type="button"
                     data-bs-toggle="offcanvas"
                     data-bs-target="#offcanvasNavbar"
                     aria-controls="offcanvasNavbar"
                     aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+                <span class="navbar-toggler-icon"></span>
             </button>
 
             <!-- Isi Offcanvas -->
@@ -196,7 +197,7 @@ if($edit_id > 0){
                                 </thead>
                                 <tbody id="tbody-resep">
                                     <?php
-                                    // Jika mode edit, render baris sesuai data lama; jika baru, render 1 baris kosong
+                                    // Edit mode
                                     $rows_to_render = !empty($detail_edit) ? $detail_edit : [['id_obat' => '', 'jumlah' => 1, 'kategori' => '', 'harga' => 0]];
                                     foreach ($rows_to_render as $item){
                                     ?>
@@ -267,7 +268,7 @@ if($edit_id > 0){
         </div>
     </div>
 
-    <!-- Modal Pembelian dengan Resep Dokter -->
+    <!-- Pembelian dengan Resep Dokter -->
     <div class="modal fade" id="modal-resep" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -307,14 +308,14 @@ if($edit_id > 0){
             return 'Rp ' + Number(angka || 0).toLocaleString('id-ID');
         }
 
-        // Filter opsi obat berdasarkan kategori yang dipilih pada baris tersebut
+        // Filter obat berdasarkan kategori
         function filterObatByKategori(baris, resetObat = true) {
             const kategoriDipilih = baris.querySelector('.select-kategori').value;
             const selectObat = baris.querySelector('.select-obat');
             const options = selectObat.querySelectorAll('option');
 
             options.forEach(opt => {
-                if (!opt.value) return; // Abaikan placeholder
+                if (!opt.value) return; 
                 const katOpt = opt.getAttribute('data-kategori');
                 const cocok = (kategoriDipilih === '' || katOpt === kategoriDipilih);
                 opt.hidden = !cocok;
@@ -366,7 +367,7 @@ if($edit_id > 0){
             grandTotalEl.textContent = formatRupiah(total);
         }
 
-        // Event delegation untuk perubahan kategori, obat, dan jumlah
+        // Perubahan kategori, obat, dan jumlah
         tbodyResep.addEventListener('change', function (e) {
             const baris = e.target.closest('.baris-obat');
             if (!baris) return;
@@ -422,7 +423,7 @@ if($edit_id > 0){
             }
         });
 
-        // Inisialisasi kalkulasi saat halaman dimuat (berguna untuk mode Edit Pesanan)
+        // Inisialisasi kalkulasi saat halaman dimuat
         document.querySelectorAll('.baris-obat').forEach(baris => {
             filterObatByKategori(baris, false);
             hitungBaris(baris);

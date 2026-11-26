@@ -44,8 +44,7 @@ if (!in_array($ext, $allowed_ext) || !in_array($mime, $allowed_mime)) {
     exit();
 }
 
-// Siapkan folder upload
-// Lokasi: ProjectWeb-MediQuick/asset/upload/resep/
+// folder upload
 $upload_dir = __DIR__ . "/../../../asset/uploads/resep/";
 if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
     echo "<script>alert('Folder upload resep tidak dapat dibuat.'); window.history.back();</script>";
@@ -60,7 +59,7 @@ if (!move_uploaded_file($file['tmp_name'], $tujuan_upload)) {
     exit();
 }
 
-// Simpan pesanan dengan status 'menunggu'
+// Simpan pesanan
 $stmt = mysqli_prepare($conn, "
     INSERT INTO pesanan (id_pelanggan, alamat_pengiriman, tanggal_pesanan, total_harga, resep_obat, status)
     VALUES (?, ?, NOW(), 0, ?, 'menunggu')
@@ -72,7 +71,7 @@ if (mysqli_stmt_execute($stmt)) {
     header("Location: ../detail_pesanan.php?id=" . $id_pesanan);
     exit();
 } else {
-    @unlink($tujuan_upload); // Hapus file jika query gagal
+    @unlink($tujuan_upload); 
     echo "<script>alert('Gagal menyimpan data pesanan resep.'); window.history.back();</script>";
     exit();
 }

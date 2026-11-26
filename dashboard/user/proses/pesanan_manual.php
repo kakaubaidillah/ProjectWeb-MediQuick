@@ -1,7 +1,6 @@
 <?php
 session_start();
 include __DIR__ . "/../../../config/connect.php";
-// Supaya error SQL (mis. kolom belum ada) terlihat & ter-rollback, tidak gagal diam-diam
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 $id_pelanggan = $_SESSION['id'] ?? "";
@@ -25,7 +24,7 @@ if (empty($alamat_pengiriman) || empty($arr_id_obat)) {
     exit();
 }
 
-// Gabungkan jika pelanggan memilih id_obat yang sama di dua baris berbeda
+// Kondisi pilih id_obat yang sama di dua baris berbeda
 $keranjang = [];
 for ($i = 0; $i < count($arr_id_obat); $i++) {
     $id_obt = (int) $arr_id_obat[$i];
@@ -46,7 +45,7 @@ try {
     $total_harga = 0;
     $item_valid  = [];
 
-    // 1. Validasi setiap obat langsung dari database (butuh_resep, stok aktif, harga asli)
+    // 1. Validasi obat 
     $stmt_obat = mysqli_prepare($conn, "
         SELECT 
             o.id_obat, o.nama_obat, o.harga, o.butuh_resep,
@@ -87,7 +86,7 @@ try {
         ];
     }
 
-    // 2. Insert baru atau Update pesanan lama jika sedang mode Ubah Pesanan
+    // 2. Update pesanan lama 
     if ($edit_id > 0) {
         $stmt_cek = mysqli_prepare($conn, "SELECT id_pesanan FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar' AND resep_obat IS NULL AND (batas_pembayaran IS NULL OR batas_pembayaran > NOW())");
         mysqli_stmt_bind_param($stmt_cek, "ii", $edit_id, $id_pelanggan);
@@ -107,7 +106,7 @@ try {
 
         $id_pesanan = $edit_id;
     } else {
-        // Batas bayar 15 menit dihitung oleh MySQL, sama dengan jam yang dipakai saat pengecekan kadaluarsa
+        // Batas bayar 15mnt
         $stmt_ins = mysqli_prepare($conn, "
             INSERT INTO pesanan (id_pelanggan, alamat_pengiriman, tanggal_pesanan, batas_pembayaran, total_harga, status)
             VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), ?, 'belum bayar')
@@ -117,7 +116,7 @@ try {
         $id_pesanan = mysqli_insert_id($conn);
     }
 
-    // 3. Simpan semua baris obat ke detail_pesanan
+    // 3. Simpan semua ke detail_pesanan
     $stmt_det = mysqli_prepare($conn, "
         INSERT INTO detail_pesanan (id_pesanan, id_obat, jumlah, harga_satuan, subtotal)
         VALUES (?, ?, ?, ?, ?)

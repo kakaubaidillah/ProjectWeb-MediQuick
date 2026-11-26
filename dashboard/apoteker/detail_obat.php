@@ -74,7 +74,7 @@ $daftar_satuan = array_unique($daftar_satuan);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <link rel="icon" type="image/png" href="../../asset/img/logo.jpeg">
+    <link rel="icon" type="image/png" href="../../asset/img/icon.png">
     <title>Detail Obat - MediQuick</title>
 </head>
 
@@ -82,7 +82,7 @@ $daftar_satuan = array_unique($daftar_satuan);
     <!-- NAVBAR -->
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="dashboard_apoteker.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
             <!-- Hamburger Menu -->
             <button class="navbar-toggler"
@@ -221,7 +221,6 @@ $daftar_satuan = array_unique($daftar_satuan);
                             </div>
                         </div>
 
-                        <!-- TOMBOL AKSI -->
                         <div class="d-flex justify-content-end align-items-center gap-2 pt-3">
                             <button type="submit" name="hapus" class="btn btn-danger fw-bold px-4 py-2" style="border-radius: 10px;"
                                 onclick="return confirm('Apakah Anda yakin ingin menghapus data obat? Tindakan ini tidak dapat dibatalkan.')">
