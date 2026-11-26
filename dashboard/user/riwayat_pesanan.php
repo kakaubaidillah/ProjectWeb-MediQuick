@@ -65,7 +65,7 @@ function kartu_pesanan($p, $badge, $rupiah)
                         <h5>#<?= (int) $p['id_pesanan']; ?></h5>
                         <p class="mb-0">
                             <i class="bi bi-calendar3"></i>
-                            <?= htmlspecialchars(date('d M Y, H:i', strtotime($p['tanggal_pesanan']))); ?>
+                            <?= $p['tanggal_pesanan']; ?>
                         </p>
                         <p class="mb-0">
                             Jenis:
@@ -75,11 +75,11 @@ function kartu_pesanan($p, $badge, $rupiah)
                     <div class="text-end">
                         <span class="badge <?= $b[0]; ?>"><?= $b[1]; ?></span>
                         <p class="mb-0 mt-2 fw-bold" style="color:#2C5EAD;">
-                            <?php if ($p['status'] === 'menunggu' || ($is_resep && (float) $p['total_harga'] == 0)): ?>
+                            <?php if ($p['status'] === 'menunggu' || ($is_resep && (float) $p['total_harga'] == 0)){ ?>
                                 <small class="text-muted fw-normal">Total belum tersedia</small>
-                            <?php else: ?>
+                            <?php }else{ ?>
                                 <?= $rupiah($p['total_harga']); ?>
-                            <?php endif; ?>
+                            <?php } ?>
                         </p>
                     </div>
                 </div>
@@ -135,7 +135,7 @@ function kartu_pesanan($p, $badge, $rupiah)
                             <a class="nav-link active" href="#">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -159,9 +159,9 @@ function kartu_pesanan($p, $badge, $rupiah)
             <div class="card-body" style="background-color:#C4E2F5;">
                 <?php foreach ($pesanan_aktif as $p) { kartu_pesanan($p, $badge, $rupiah); } ?>
 
-                <?php if (!$pesanan_aktif): ?>
+                <?php if (!$pesanan_aktif){ ?>
                     <div class="alert alert-light mb-0">Tidak ada pesanan yang sedang berjalan.</div>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 
@@ -174,9 +174,9 @@ function kartu_pesanan($p, $badge, $rupiah)
             <div class="card-body" style="background-color:#C4E2F5;">
                 <?php foreach ($pesanan_selesai as $p) { kartu_pesanan($p, $badge, $rupiah); } ?>
 
-                <?php if (!$pesanan_selesai): ?>
+                <?php if (!$pesanan_selesai){ ?>
                     <div class="alert alert-light mb-0">Belum ada riwayat pesanan.</div>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
 

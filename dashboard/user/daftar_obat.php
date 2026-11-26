@@ -119,7 +119,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                             <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -132,7 +132,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
             <div>
                 <h2 class="mb-0 fw-bold">Daftar Obat</h2>
                 <?php if ($pasien): ?>
-                    <small class="text-muted">Pasien: <strong><?= htmlspecialchars($pasien['nama']) ?></strong></small>
+                    <small class="text-muted">Pasien: <strong><?= $pasien['nama']; ?></strong></small>
                 <?php endif; ?>
             </div>
             <a href="user.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>" class="btn btn-outline-secondary btn-sm fw-semibold">
@@ -185,7 +185,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                                 <h6 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($obat['nama_obat']) ?></h6>
                                 <div class="small fw-semibold text-primary">
                                     Rp <?= number_format((float) $obat['harga'], 0, ',', '.') ?>
-                                    <span class="text-muted fw-normal">/ <?= htmlspecialchars($obat['satuan']) ?></span>
+                                    <span class="text-muted fw-normal">/ <?= $obat['satuan'] ?></span>
                                 </div>
                             </div>
                         </button>

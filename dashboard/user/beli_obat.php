@@ -139,7 +139,7 @@ if($edit_id > 0){
                             <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Logout</a>
+                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -153,11 +153,11 @@ if($edit_id > 0){
                 <i class="bi bi-cart-plus me-2 text-primary"></i><?= $edit_id > 0 ? 'Ubah Pesanan Obat #' . $edit_id : 'Form Pembelian Obat' ?>
             </h1>
             <div class="d-flex gap-2">
-                <?php if ($edit_id === 0): ?>
+                <?php if ($edit_id === 0){ ?>
                     <button type="button" class="btn btn-primary fw-semibold" data-bs-toggle="modal" data-bs-target="#modal-resep">
                         <i class="bi bi-file-earmark-medical me-1"></i> Beli dengan Resep Dokter
                     </button>
-                <?php endif; ?>
+                <?php } ?>
                 <a href="<?= $edit_id > 0 ? 'detail_pesanan.php?id=' . $edit_id : 'user.php' ?>" class="btn btn-outline-secondary fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
@@ -179,9 +179,9 @@ if($edit_id > 0){
                     </div>
 
                     <form action="proses/pesanan_manual.php" method="POST" id="form-manual">
-                        <?php if ($edit_id > 0): ?>
+                        <?php if ($edit_id > 0){ ?>
                             <input type="hidden" name="edit_id" value="<?= $edit_id ?>">
-                        <?php endif; ?>
+                        <?php } ?>
 
                         <div class="table-responsive mb-3">
                             <table class="table table-bordered align-middle" id="tabel-obat">
@@ -199,31 +199,31 @@ if($edit_id > 0){
                                     <?php
                                     // Jika mode edit, render baris sesuai data lama; jika baru, render 1 baris kosong
                                     $rows_to_render = !empty($detail_edit) ? $detail_edit : [['id_obat' => '', 'jumlah' => 1, 'kategori' => '', 'harga' => 0]];
-                                    foreach ($rows_to_render as $item):
+                                    foreach ($rows_to_render as $item){
                                     ?>
                                     <tr class="baris-obat">
                                         <td>
                                             <select class="form-select select-kategori">
                                                 <option value="">-- Semua Kategori --</option>
-                                                <?php foreach ($daftar_kategori as $kat): ?>
+                                                <?php foreach ($daftar_kategori as $kat){ ?>
                                                     <option value="<?= htmlspecialchars($kat) ?>" <?= ($item['kategori'] === $kat) ? 'selected' : '' ?>>
                                                         <?= htmlspecialchars($kat) ?>
                                                     </option>
-                                                <?php endforeach; ?>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                         <td>
                                             <select name="id_obat[]" class="form-select select-obat" required>
                                                 <option value="" disabled <?= empty($item['id_obat']) ? 'selected' : '' ?>>-- Pilih Obat --</option>
-                                                <?php foreach ($daftar_obat as $obt): ?>
+                                                <?php foreach ($daftar_obat as $obt){ ?>
                                                     <option value="<?= $obt['id_obat'] ?>"
                                                             data-kategori="<?= htmlspecialchars($obt['kategori']) ?>"
                                                             data-harga="<?= $obt['harga'] ?>"
                                                             data-stok="<?= $obt['total_stok'] ?>"
                                                             <?= ((int)$item['id_obat'] === (int)$obt['id_obat']) ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($obt['nama_obat']) ?> (Stok: <?= $obt['total_stok'] ?> <?= htmlspecialchars($obt['satuan']) ?>)
+                                                        <?= htmlspecialchars($obt['nama_obat']) ?> (Stok: <?= $obt['total_stok'] ?> <?= $obt['satuan'] ?>)
                                                     </option>
-                                                <?php endforeach; ?>
+                                                <?php } ?>
                                             </select>
                                         </td>
                                         <td>
@@ -241,7 +241,7 @@ if($edit_id > 0){
                                             </button>
                                         </td>
                                     </tr>
-                                    <?php endforeach; ?>
+                                    <?php } ?>
                                 </tbody>
                                 <tfoot class="table-light">
                                     <tr>

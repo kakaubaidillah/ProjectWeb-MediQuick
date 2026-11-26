@@ -106,27 +106,27 @@ $is_resep = !empty($pesanan['resep_obat']);
                     <p class="fw-semibold"><?= $is_resep ? 'Pembelian Melalui Resep Dokter' : 'Pembelian Obat Bebas (Manual)' ?></p>
 
                     <p class="mb-1 text-muted small">Alamat Pengiriman:</p>
-                    <p class="mb-0"><?= nl2br(htmlspecialchars($pesanan['alamat_pengiriman'])) ?></p>
+                    <p class="mb-0"><?= htmlspecialchars($pesanan['alamat_pengiriman']) ?></p>
                 </div>
 
-                <?php if ($is_resep): ?>
+                <?php if ($is_resep){ ?>
                     <div class="card border-0 shadow-sm p-4 mb-3">
                         <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">Lampiran Resep Dokter</h5>
                         <?php
-                        $file_url = "../../uploads/resep/" . urlencode($pesanan['resep_obat']);
+                        $file_url = "../../asset/uploads/resep/" . urlencode($pesanan['resep_obat']);
                         $ext_file = strtolower(pathinfo($pesanan['resep_obat'], PATHINFO_EXTENSION));
                         ?>
-                        <?php if ($ext_file === 'pdf'): ?>
+                        <?php if ($ext_file === 'pdf'){ ?>
                             <a href="<?= $file_url ?>" target="_blank" class="btn btn-outline-primary">
                                 <i class="bi bi-file-earmark-pdf me-1"></i> Lihat Dokumen Resep (PDF)
                             </a>
-                        <?php else: ?>
+                        <?php }else{ ?>
                             <img src="<?= $file_url ?>" alt="Resep Dokter" class="img-fluid rounded border" style="max-height: 360px;">
-                        <?php endif; ?>
+                        <?php } ?>
                     </div>
-                <?php endif; ?>
+                <?php } ?>
 
-                <?php if (!empty($items)): ?>
+                <?php if (!empty($items)){ ?>
                     <div class="card border-0 shadow-sm p-4">
                         <h5 class="fw-bold text-primary border-bottom pb-2 mb-3">Daftar Obat</h5>
                         <div class="table-responsive">
@@ -140,14 +140,14 @@ $is_resep = !empty($pesanan['resep_obat']);
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($items as $it): ?>
+                                    <?php foreach ($items as $it){ ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($it['nama_obat']) ?></td>
-                                            <td class="text-center"><?= (int)$it['jumlah'] ?> <?= htmlspecialchars($it['satuan']) ?></td>
+                                            <td><?= $it['nama_obat'] ?></td>
+                                            <td class="text-center"><?= (int)$it['jumlah'] ?> <?= $it['satuan'] ?></td>
                                             <td class="text-end">Rp <?= number_format($it['harga_satuan'], 0, ',', '.') ?></td>
                                             <td class="text-end fw-semibold">Rp <?= number_format($it['subtotal'], 0, ',', '.') ?></td>
                                         </tr>
-                                    <?php endforeach; ?>
+                                    <?php } ?>
                                 </tbody>
                                 <tfoot class="table-light">
                                     <tr>
@@ -158,12 +158,12 @@ $is_resep = !empty($pesanan['resep_obat']);
                             </table>
                         </div>
                     </div>
-                <?php endif; ?>
+                <?php } ?>
             </div>
 
             <!-- Kolom Kanan: Panel Status / Pembayaran QRIS / Aksi -->
             <div class="col-lg-5">
-                <?php if ($pesanan['status'] === 'menunggu'): ?>
+                <?php if ($pesanan['status'] === 'menunggu'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
                         <i class="bi bi-hourglass-split text-warning" style="font-size: 3.5rem;"></i>
                         <h5 class="fw-bold mt-2">Menunggu Verifikasi Apoteker</h5>
@@ -179,7 +179,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                         </div>
                     </div>
 
-                <?php elseif ($pesanan['status'] === 'belum bayar'): ?>
+                <?php }elseif ($pesanan['status'] === 'belum bayar'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
                         <div class="alert alert-warning py-2 mb-3">
                             <small class="d-block">Selesaikan pembayaran dalam:</small>
@@ -189,23 +189,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                         <h6 class="fw-bold mb-2">Scan QRIS MediQuick</h6>
                         <div class="border rounded p-3 bg-white d-inline-block mx-auto mb-2">
                             <!-- QRIS Gimmick SVG -->
-                            <svg width="170" height="170" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="100" height="100" fill="#ffffff"/>
-                                <rect x="8" y="8" width="26" height="26" fill="none" stroke="#111" stroke-width="5"/>
-                                <rect x="15" y="15" width="12" height="12" fill="#111"/>
-                                <rect x="66" y="8" width="26" height="26" fill="none" stroke="#111" stroke-width="5"/>
-                                <rect x="73" y="15" width="12" height="12" fill="#111"/>
-                                <rect x="8" y="66" width="26" height="26" fill="none" stroke="#111" stroke-width="5"/>
-                                <rect x="15" y="73" width="12" height="12" fill="#111"/>
-                                <rect x="42" y="12" width="6" height="6" fill="#111"/>
-                                <rect x="52" y="20" width="6" height="14" fill="#111"/>
-                                <rect x="42" y="42" width="16" height="16" fill="#2C5EAD"/>
-                                <rect x="12" y="44" width="18" height="6" fill="#111"/>
-                                <rect x="68" y="46" width="20" height="6" fill="#111"/>
-                                <rect x="44" y="68" width="8" height="22" fill="#111"/>
-                                <rect x="64" y="66" width="14" height="10" fill="#111"/>
-                                <rect x="82" y="78" width="10" height="12" fill="#111"/>
-                            </svg>
+                            <img src="../../asset/img/images.jpg" alt="Qris" width="170" height="170">
                             <div class="small fw-bold text-muted mt-1">NMID: ID102026MEDIQUICK</div>
                         </div>
 
@@ -219,11 +203,11 @@ $is_resep = !empty($pesanan['resep_obat']);
                                 </button>
                             </form>
 
-                            <?php if (!$is_resep): ?>
+                            <?php if (!$is_resep){ ?>
                                 <a href="beli_obat.php?edit=<?= $id_pesanan ?>" class="btn btn-outline-primary">
                                     <i class="bi bi-pencil-square me-1"></i> Ubah Pesanan
                                 </a>
-                            <?php endif; ?>
+                            <?php } ?>
 
                             <form action="proses/batal_pesanan.php" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pesanan ini?')">
                                 <input type="hidden" name="id_pesanan" value="<?= $id_pesanan ?>">
@@ -232,7 +216,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                         </div>
                     </div>
 
-                <?php elseif ($pesanan['status'] === 'dibayar'): ?>
+                <?php }elseif ($pesanan['status'] === 'dibayar'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
                         <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
                         <h5 class="fw-bold mt-2 text-success">Pesanan Berhasil Dibayar!</h5>
@@ -242,30 +226,30 @@ $is_resep = !empty($pesanan['resep_obat']);
                         <a href="user.php" class="btn btn-primary fw-semibold">Kembali ke Beranda</a>
                     </div>
 
-                <?php elseif ($pesanan['status'] === 'ditolak'): ?>
+                <?php }elseif ($pesanan['status'] === 'ditolak'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
                         <i class="bi bi-x-circle-fill text-danger" style="font-size: 3.5rem;"></i>
                         <h5 class="fw-bold mt-2 text-danger">Pesanan Resep Ditolak</h5>
                         <div class="alert alert-danger text-start small mt-2">
                             <strong>Catatan Apoteker:</strong><br>
-                            <?= nl2br(htmlspecialchars($pesanan['catatan_apoteker'] ?: 'Resep tidak memenuhi syarat verifikasi.')) ?>
+                            <?= htmlspecialchars($pesanan['catatan_apoteker'] ?: 'Resep tidak memenuhi syarat verifikasi.') ?>
                         </div>
                         <a href="beli_obat.php" class="btn btn-primary fw-semibold">Ajukan Pesanan Baru</a>
                     </div>
 
-                <?php elseif ($pesanan['status'] === 'dibatalkan'): ?>
+                <?php }elseif ($pesanan['status'] === 'dibatalkan'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
                         <i class="bi bi-slash-circle text-secondary" style="font-size: 3.5rem;"></i>
                         <h5 class="fw-bold mt-2 text-secondary">Pesanan Dibatalkan</h5>
                         <p class="text-muted small">Pesanan ini telah dibatalkan atau melewati batas waktu pembayaran.</p>
                         <a href="beli_obat.php" class="btn btn-outline-primary fw-semibold">Buat Pesanan Baru</a>
                     </div>
-                <?php endif; ?>
+                <?php } ?>
             </div>
         </div>
     </div>
 
-    <?php if ($pesanan['status'] === 'belum bayar' && $sisa_detik > 0): ?>
+    <?php if ($pesanan['status'] === 'belum bayar' && $sisa_detik > 0){ ?>
     <script>
         let sisaDetik = <?= (int) $sisa_detik ?>;
         const timerEl = document.getElementById('countdown-timer');
@@ -286,6 +270,6 @@ $is_resep = !empty($pesanan['resep_obat']);
         updateTimer();
         setInterval(updateTimer, 1000);
     </script>
-    <?php endif; ?>
+    <?php } ?>
 </body>
 </html>

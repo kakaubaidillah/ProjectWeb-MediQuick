@@ -119,7 +119,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
                         <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
+                        <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
                     </li>
                 </ul>
             </div>
