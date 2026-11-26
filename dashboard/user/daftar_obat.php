@@ -1,13 +1,13 @@
 <?php
 session_start();
-include __DIR__ . "/../../config/connection.php";
+include __DIR__ . "/../../config/connect.php";
 
-$id = $_GET['id'] ?? ($_POST['id_pelanggan'] ?? ($_SESSION['id_pelanggan'] ?? ''));
+$id = $_SESSION['id'] ?? '';
 
 $pasien = null;
 if ($id !== '') {
-    $stmt_pasien = mysqli_prepare($conn, "SELECT * FROM pasien WHERE id_pasien = ?");
-    mysqli_stmt_bind_param($stmt_pasien, "s", $id);
+    $stmt_pasien = mysqli_prepare($conn, "SELECT nama_lengkap FROM pelanggan WHERE id_pelanggan = ?");
+    mysqli_stmt_bind_param($stmt_pasien, "i", $id);
     mysqli_stmt_execute($stmt_pasien);
     $pasien = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_pasien));
 }
@@ -25,12 +25,18 @@ if ($q_kategori) {
 
 // Ambil daftar obat (bisa difilter berdasarkan kategori jika dipilih)
 if ($kategori_aktif !== '') {
-    $stmt_obat = mysqli_prepare($conn, "SELECT * FROM obat WHERE kategori = ? ORDER BY nama_obat ASC");
+    $stmt_obat = mysqli_prepare($conn, "SELECT o.*,
+               COALESCE((SELECT SUM(s.jumlah_stok) FROM stok_obat s
+                         WHERE s.id_obat = o.id_obat AND s.tanggal_kadaluarsa >= CURDATE()), 0) AS total_stok
+        FROM obat o WHERE o.kategori = ? ORDER BY o.nama_obat ASC");
     mysqli_stmt_bind_param($stmt_obat, "s", $kategori_aktif);
     mysqli_stmt_execute($stmt_obat);
     $data_obat = mysqli_stmt_get_result($stmt_obat);
 } else {
-    $stmt_obat = mysqli_prepare($conn, "SELECT * FROM obat ORDER BY nama_obat ASC");
+    $stmt_obat = mysqli_prepare($conn, "SELECT o.*,
+               COALESCE((SELECT SUM(s.jumlah_stok) FROM stok_obat s
+                         WHERE s.id_obat = o.id_obat AND s.tanggal_kadaluarsa >= CURDATE()), 0) AS total_stok
+        FROM obat o ORDER BY o.nama_obat ASC");
     mysqli_stmt_execute($stmt_obat);
     $data_obat = mysqli_stmt_get_result($stmt_obat);
 }
@@ -119,7 +125,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                             <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
+                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php">Logout</a>
                         </li>
                     </ul>
                 </div>
@@ -132,7 +138,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
             <div>
                 <h2 class="mb-0 fw-bold">Daftar Obat</h2>
                 <?php if ($pasien): ?>
-                    <small class="text-muted">Pasien: <strong><?= $pasien['nama']; ?></strong></small>
+                    <small class="text-muted">Pasien: <strong><?= htmlspecialchars($pasien['nama_lengkap']); ?></strong></small>
                 <?php endif; ?>
             </div>
             <a href="user.php<?= $id !== '' ? '?id=' . urlencode($id) : '' ?>" class="btn btn-outline-secondary btn-sm fw-semibold">
@@ -185,7 +191,14 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                                 <h6 class="fw-bold mb-1 text-dark"><?= htmlspecialchars($obat['nama_obat']) ?></h6>
                                 <div class="small fw-semibold text-primary">
                                     Rp <?= number_format((float) $obat['harga'], 0, ',', '.') ?>
-                                    <span class="text-muted fw-normal">/ <?= $obat['satuan'] ?></span>
+                                    <span class="text-muted fw-normal">/ <?= htmlspecialchars($obat['satuan']) ?></span>
+                                </div>
+                                <div class="small mt-1">
+                                    <?php if ((int) $obat['total_stok'] > 0){ ?>
+                                        <span class="text-muted">Stok: <?= (int) $obat['total_stok'] ?></span>
+                                    <?php }else{ ?>
+                                        <span class="badge bg-secondary">Stok Habis</span>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </button>

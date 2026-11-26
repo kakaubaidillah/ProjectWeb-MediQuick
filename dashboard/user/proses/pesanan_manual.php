@@ -1,15 +1,17 @@
 <?php
 session_start();
 include __DIR__ . "/../../../config/connect.php";
+// Supaya error SQL (mis. kolom belum ada) terlihat & ter-rollback, tidak gagal diam-diam
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$id_pelanggan = $_SESSION['id_pelanggan'] ?? "";
+$id_pelanggan = $_SESSION['id'] ?? "";
 if (empty($id_pelanggan)) {
-    echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href='../../login/login.php';</script>";
+    header("Location: ../../../login/login.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: beli_obat.php");
+    header("Location: ../beli_obat.php");
     exit();
 }
 
@@ -87,7 +89,7 @@ try {
 
     // 2. Insert baru atau Update pesanan lama jika sedang mode Ubah Pesanan
     if ($edit_id > 0) {
-        $stmt_cek = mysqli_prepare($conn, "SELECT id_pesanan FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar' AND resep_obat IS NULL");
+        $stmt_cek = mysqli_prepare($conn, "SELECT id_pesanan FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar' AND resep_obat IS NULL AND (batas_pembayaran IS NULL OR batas_pembayaran > NOW())");
         mysqli_stmt_bind_param($stmt_cek, "ii", $edit_id, $id_pelanggan);
         mysqli_stmt_execute($stmt_cek);
         if (!mysqli_fetch_assoc(mysqli_stmt_get_result($stmt_cek))) {
@@ -105,12 +107,12 @@ try {
 
         $id_pesanan = $edit_id;
     } else {
-        $batas_pembayaran = date('Y-m-d H:i:s', strtotime('+15 minutes'));
+        // Batas bayar 15 menit dihitung oleh MySQL, sama dengan jam yang dipakai saat pengecekan kadaluarsa
         $stmt_ins = mysqli_prepare($conn, "
             INSERT INTO pesanan (id_pelanggan, alamat_pengiriman, tanggal_pesanan, batas_pembayaran, total_harga, status)
-            VALUES (?, ?, NOW(), ?, ?, 'belum bayar')
+            VALUES (?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 15 MINUTE), ?, 'belum bayar')
         ");
-        mysqli_stmt_bind_param($stmt_ins, "issd", $id_pelanggan, $alamat_pengiriman, $batas_pembayaran, $total_harga);
+        mysqli_stmt_bind_param($stmt_ins, "isd", $id_pelanggan, $alamat_pengiriman, $total_harga);
         mysqli_stmt_execute($stmt_ins);
         $id_pesanan = mysqli_insert_id($conn);
     }
@@ -126,12 +128,17 @@ try {
     }
 
     mysqli_commit($conn);
-    header("Location: detail_pesanan.php?id=" . $id_pesanan);
+    header("Location: ../detail_pesanan.php?id=" . $id_pesanan);
     exit();
 
+} catch (mysqli_sql_exception $e) {
+    mysqli_rollback($conn);
+    error_log("pesanan_manual: " . $e->getMessage());
+    echo "<script>alert('Terjadi kesalahan database saat menyimpan pesanan.'); window.history.back();</script>";
+    exit();
 } catch (Exception $e) {
     mysqli_rollback($conn);
-    $pesan = addslashes($e->getMessage());
-    echo "<script>alert('Gagal memproses pesanan: $pesan'); window.history.back();</script>";
+    $pesan = json_encode('Gagal memproses pesanan: ' . $e->getMessage());
+    echo "<script>alert($pesan); window.history.back();</script>";
     exit();
 }

@@ -2,11 +2,11 @@
 session_start();
 include __DIR__ . "/../../config/connect.php";
 
-if (!isset($_SESSION['id_pelanggan'])) {
-    header("Location: login.php");
+if (!isset($_SESSION['id'])) {
+    header("Location: ../../login/login.php");
     exit;
 }
-$id_pelanggan = (int) $_SESSION['id_pelanggan'];
+$id_pelanggan = (int) $_SESSION['id'];
 
 // Pesanan 'belum bayar' yang waktunya habis -> otomatis dibatalkan
 $stmt = mysqli_prepare($conn, "
@@ -65,7 +65,7 @@ function kartu_pesanan($p, $badge, $rupiah)
                         <h5>#<?= (int) $p['id_pesanan']; ?></h5>
                         <p class="mb-0">
                             <i class="bi bi-calendar3"></i>
-                            <?= $p['tanggal_pesanan']; ?>
+                            <?= date('d M Y, H:i', strtotime($p['tanggal_pesanan'])); ?>
                         </p>
                         <p class="mb-0">
                             Jenis:
@@ -135,7 +135,7 @@ function kartu_pesanan($p, $badge, $rupiah)
                             <a class="nav-link active" href="#">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
+                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php">LOGOUT</a>
                         </li>
                     </ul>
                 </div>

@@ -2,7 +2,7 @@
 session_start();
 include __DIR__ . "/../../config/connect.php";
 
-$id_pelanggan = $_SESSION['id_pelanggan'] ?? "";
+$id_pelanggan = $_SESSION['id'] ?? "";
 if (empty($id_pelanggan)) {
     echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href='../../login/login.php';</script>";
     exit();
@@ -15,7 +15,7 @@ if ($id_pesanan <= 0) {
 }
 
 // Ambil data pesanan milik pelanggan yang sedang login
-$stmt = mysqli_prepare($conn, "SELECT * FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ?");
+$stmt = mysqli_prepare($conn, "SELECT *, TIMESTAMPDIFF(SECOND, NOW(), batas_pembayaran) AS sisa_detik FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ?");
 mysqli_stmt_bind_param($stmt, "ii", $id_pesanan, $id_pelanggan);
 mysqli_stmt_execute($stmt);
 $pesanan = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
@@ -25,19 +25,17 @@ if (!$pesanan) {
     exit();
 }
 
-// Auto-cancel di backend jika status 'belum bayar' dan waktu batas_pembayaran sudah lewat
+// Auto-cancel jika status 'belum bayar' dan batas_pembayaran sudah lewat.
+// Waktu dihitung oleh MySQL (NOW()) supaya sama dengan waktu yang dipakai saat pesanan dibuat.
 $sisa_detik = 0;
-if ($pesanan['status'] === 'belum bayar' && !empty($pesanan['batas_pembayaran'])) {
-    $waktu_batas = strtotime($pesanan['batas_pembayaran']);
-    $sekarang    = time();
-
-    if ($sekarang >= $waktu_batas) {
+if ($pesanan['status'] === 'belum bayar' && $pesanan['sisa_detik'] !== null) {
+    if ((int) $pesanan['sisa_detik'] <= 0) {
         $stmt_exp = mysqli_prepare($conn, "UPDATE pesanan SET status = 'dibatalkan' WHERE id_pesanan = ? AND status = 'belum bayar'");
         mysqli_stmt_bind_param($stmt_exp, "i", $id_pesanan);
         mysqli_stmt_execute($stmt_exp);
         $pesanan['status'] = 'dibatalkan';
     } else {
-        $sisa_detik = $waktu_batas - $sekarang;
+        $sisa_detik = (int) $pesanan['sisa_detik'];
     }
 }
 
@@ -142,8 +140,8 @@ $is_resep = !empty($pesanan['resep_obat']);
                                 <tbody>
                                     <?php foreach ($items as $it){ ?>
                                         <tr>
-                                            <td><?= $it['nama_obat'] ?></td>
-                                            <td class="text-center"><?= (int)$it['jumlah'] ?> <?= $it['satuan'] ?></td>
+                                            <td><?= htmlspecialchars($it['nama_obat']) ?></td>
+                                            <td class="text-center"><?= (int)$it['jumlah'] ?> <?= htmlspecialchars($it['satuan']) ?></td>
                                             <td class="text-end">Rp <?= number_format($it['harga_satuan'], 0, ',', '.') ?></td>
                                             <td class="text-end fw-semibold">Rp <?= number_format($it['subtotal'], 0, ',', '.') ?></td>
                                         </tr>
@@ -172,7 +170,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                         </p>
                         <div class="d-grid gap-2 mt-2">
                             <a href="user.php" class="btn btn-primary fw-semibold">Kembali ke Dashboard</a>
-                            <form action="proses_batal_pesanan.php" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pengajuan resep ini?')">
+                            <form action="proses/batal_pesanan.php" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pengajuan resep ini?')">
                                 <input type="hidden" name="id_pesanan" value="<?= $id_pesanan ?>">
                                 <button type="submit" class="btn btn-outline-danger w-100">Batalkan Pengajuan</button>
                             </form>
@@ -181,10 +179,12 @@ $is_resep = !empty($pesanan['resep_obat']);
 
                 <?php }elseif ($pesanan['status'] === 'belum bayar'){ ?>
                     <div class="card border-0 shadow-sm p-4 text-center">
+                        <?php if ($sisa_detik > 0){ ?>
                         <div class="alert alert-warning py-2 mb-3">
                             <small class="d-block">Selesaikan pembayaran dalam:</small>
                             <span class="fw-bold fs-4 text-danger" id="countdown-timer">--:--</span>
                         </div>
+                        <?php } ?>
 
                         <h6 class="fw-bold mb-2">Scan QRIS MediQuick</h6>
                         <div class="border rounded p-3 bg-white d-inline-block mx-auto mb-2">

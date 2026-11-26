@@ -1,7 +1,7 @@
 <?php
 session_start();
 include __DIR__ ."/../../config/connect.php";
-$id = $_SESSION['id_pelanggan']?? "";
+$id = $_SESSION['id']?? "";
 
 //data baru
 $sql_obat = "SELECT * FROM obat LIMIT 9";
@@ -107,7 +107,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Beranda</a>
+                        <a class="nav-link active" href="user.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="beli_obat.php">Pesan Obat</a>
@@ -119,7 +119,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
                         <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
+                        <a class="nav-link text-danger" href="../../login/proses/access_logout.php">LOGOUT</a>
                     </li>
                 </ul>
             </div>
@@ -150,10 +150,10 @@ $data_obat = mysqli_query($conn, $sql_obat);
                                 </p>
                                 <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-2">
                                     <?php if (!empty($id)) {?>
-                                        <a href="#" class="btn btn-warning btn-lg fw-bold text-dark">Buat Pesanan</a>
+                                        <a href="beli_obat.php" class="btn btn-warning btn-lg fw-bold text-dark">Buat Pesanan</a>
                                     <?php }else{ ?>
-                                        <a href="#" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
-                                        <a href="#" class="btn btn-outline-light btn-lg">Masuk Akun</a>
+                                        <a href="../../login/regist.php" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
+                                        <a href="../../login/login.php" class="btn btn-outline-light btn-lg">Masuk Akun</a>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -192,10 +192,10 @@ $data_obat = mysqli_query($conn, $sql_obat);
                                 </p>
                                 <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-2">
                                     <?php if (!empty($id)){ ?>
-                                        <a href="tambah.php" class="btn btn-warning btn-lg fw-bold text-dark">Kirim Resep</a>
+                                        <a href="beli_obat.php" class="btn btn-warning btn-lg fw-bold text-dark">Kirim Resep</a>
                                     <?php }else{ ?>
-                                        <a href="register.php" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
-                                        <a href="login.php" class="btn btn-outline-light btn-lg">Masuk Akun</a>
+                                        <a href="../../login/regist.php" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
+                                        <a href="../../login/login.php" class="btn btn-outline-light btn-lg">Masuk Akun</a>
                                     <?php } ?>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
     <div class="container my-4" style="max-width: 900px;">
         <div class="d-flex justify-content-between align-items-center mb-3" style="max-width: 800px;">
             <h3 class="mb-0">Daftar Obat</h3>
-            <a href="#" class="text-decoration-none" style="color: grey;">
+            <a href="daftar_obat.php" class="text-decoration-none" style="color: grey;">
                 View All<i class="bi bi-arrow-right"></i>
             </a>
         </div>

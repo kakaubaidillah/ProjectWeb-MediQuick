@@ -1,10 +1,9 @@
 <?php 
 session_start();
 include __DIR__. "/../../config/connect.php";
-$id_pelanggan = $_SESSION['id_pelanggan']?? "";
+$id_pelanggan = $_SESSION['id']?? "";
 
 if(empty($id_pelanggan)){
-    echo "<script>alert('Silakan login terlebih dahulu!')</script>";
     header("Location: ../../login/login.php");
     exit();
 }
@@ -51,7 +50,7 @@ $pesanan_edit = null;
 $detail_edit = [];
 
 if($edit_id > 0){
-    $stmt_cek = mysqli_prepare($conn, "SELECT * FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar' AND resep_obat IS NULL");
+    $stmt_cek = mysqli_prepare($conn, "SELECT * FROM pesanan WHERE id_pesanan = ? AND id_pelanggan = ? AND status = 'belum bayar' AND resep_obat IS NULL AND (batas_pembayaran IS NULL OR batas_pembayaran > NOW())");
     mysqli_stmt_bind_param($stmt_cek, "ii", $edit_id, $id_pelanggan);
     mysqli_stmt_execute($stmt_cek);
     $res_cek = mysqli_stmt_get_result($stmt_cek);
@@ -139,7 +138,7 @@ if($edit_id > 0){
                             <a class="nav-link" href="riwayat_pesanan.php">Riwayat Pesanan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="../../login/proses/access_logout.php">Logout</a>
+                            <a class="nav-link text-danger" href="../../login/proses/access_logout.php">LOGOUT</a>
                         </li>
                     </ul>
                 </div>
@@ -279,14 +278,14 @@ if($edit_id > 0){
                     </div>
                     <div class="modal-body">
                         <label class="form-label fw-semibold">Upload Resep</label>
-                        <input type="file" name="resep" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
+                        <input type="file" name="resep" class="form-control" accept=".jpg,.jpeg,.png," required>
 
                         <label class="form-label fw-semibold mt-3">Alamat Pengiriman</label>
                         <textarea name="alamat_pengiriman" class="form-control" rows="3" placeholder="Masukkan alamat lengkap" required></textarea>
 
                         <div class="alert alert-warning mt-3 mb-0 small">
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                            Pastikan resep terlihat jelas dan merupakan resep dokter yang valid (format: <strong>.jpg, .jpeg, .png, .pdf</strong>, maksimal 5 MB).
+                            Pastikan resep terlihat jelas dan merupakan resep dokter yang valid (format: <strong>.jpg, .jpeg, .png</strong>, maksimal 5 MB).
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-include __DIR__ . "/../../config/connection.php";
+include __DIR__ . "/../../config/connect.php";
 
 if (isset($_POST['registrasi'])) {
     $nama   = $_POST['name'];
@@ -49,7 +49,7 @@ if (isset($_POST['registrasi'])) {
         $_SESSION['role']   = "pelanggan";
         $_SESSION['status'] = "Login";
 
-        header("Location: ../../dashboard/user.php");
+        header("Location: ../../dashboard/user/user.php");
         exit();
     } else {
         mysqli_stmt_close($stmt_insert);

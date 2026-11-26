@@ -5,12 +5,16 @@ $id_obat = $_POST['id_obat']?? "";
 $id_pelanggan = $_POST['id_pelanggan']?? "";
 $key = $_POST['keyPage']?? "";
 
-$sql_konsultasi = "SELECT * FROM obat WHERE id_obat = '$id_obat'";
+$id_obat = (int) $id_obat;
+$stmt = mysqli_prepare($conn, "SELECT o.*, COALESCE((SELECT SUM(s.jumlah_stok) FROM stok_obat s WHERE s.id_obat = o.id_obat AND s.tanggal_kadaluarsa >= CURDATE()), 0) AS total_stok FROM obat o WHERE o.id_obat = ?");
+mysqli_stmt_bind_param($stmt, "i", $id_obat);
+mysqli_stmt_execute($stmt);
+$obat = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
-$data_obat = mysqli_query($conn, $sql_konsultasi);
-
-$jumlah = mysqli_num_rows($data_obat);
-$obat = mysqli_fetch_assoc($data_obat);
+if (!$obat) {
+    header("Location: daftar_obat.php");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,10 +51,11 @@ $obat = mysqli_fetch_assoc($data_obat);
                 <div class="card shadow-sm" style="max-width: 800px; max-height: 800px;">
                     <div class="card-body">
                         <div class="align-items-center gap-5 mb-3">
-                            <h3 class="mb-3">Nama Obat: <?php echo $obat['nama_obat']; ?></h3>
-                            <h3 class="mb-3">Kategori: <?php echo $obat['kategori']; ?></h3>
-                            <h3 class="mb-3">Satuan: <?php echo $obat['satuan']; ?></h3>
-                            <h3 class="mb-3">Harga: Rp.<?php echo $obat['harga']; ?></h3>
+                            <h3 class="mb-3">Nama Obat: <?= htmlspecialchars($obat['nama_obat']); ?></h3>
+                            <h3 class="mb-3">Kategori: <?= htmlspecialchars($obat['kategori']); ?></h3>
+                            <h3 class="mb-3">Satuan: <?= htmlspecialchars($obat['satuan']); ?></h3>
+                            <h3 class="mb-3">Harga: Rp <?= number_format((float) $obat['harga'], 0, ',', '.'); ?></h3>
+                            <h3 class="mb-3">Stok: <?= (int) $obat['total_stok'] > 0 ? (int) $obat['total_stok'] . ' ' . htmlspecialchars($obat['satuan']) : 'Habis'; ?></h3>
                         </div>
                         <div class="btn-group mb-3" role="group" aria-label="Color selection">
                             <label class="btn" style="

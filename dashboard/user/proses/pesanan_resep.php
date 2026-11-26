@@ -2,14 +2,14 @@
 session_start();
 include __DIR__ . "/../../../config/connect.php";
 
-$id_pelanggan = $_SESSION['id_pelanggan'] ?? "";
+$id_pelanggan = $_SESSION['id'] ?? "";
 if (empty($id_pelanggan)) {
-    echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href='../../login/login.php';</script>";
+    echo "<script>alert('Silakan login terlebih dahulu!'); window.location.href='../../../login/login.php';</script>";
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: beli_obat.php");
+    header("Location: ../beli_obat.php");
     exit();
 }
 
@@ -32,22 +32,24 @@ if ($file['size'] > $max_size) {
 }
 
 // Validasi ekstensi dan MIME type asli file
-$allowed_ext  = ['jpg', 'jpeg', 'png', 'pdf'];
-$allowed_mime = ['image/jpeg', 'image/png', 'application/pdf'];
+$allowed_ext  = ['jpg', 'jpeg', 'png'];
+$allowed_mime = ['image/jpeg', 'image/png'];
 
 $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
 $finfo = new finfo(FILEINFO_MIME_TYPE);
 $mime = $finfo->file($file['tmp_name']);
 
 if (!in_array($ext, $allowed_ext) || !in_array($mime, $allowed_mime)) {
-    echo "<script>alert('Format file tidak valid! Hanya diperbolehkan JPG, JPEG, PNG, atau PDF.'); window.history.back();</script>";
+    echo "<script>alert('Format file tidak valid! Hanya diperbolehkan JPG, JPEG, atau PNG.'); window.history.back();</script>";
     exit();
 }
 
 // Siapkan folder upload
-$upload_dir = __DIR__ . "/../../uploads/resep/";
-if (!is_dir($upload_dir)) {
-    mkdir($upload_dir, 0755, true);
+// Lokasi: ProjectWeb-MediQuick/asset/upload/resep/
+$upload_dir = __DIR__ . "/../../../asset/uploads/resep/";
+if (!is_dir($upload_dir) && !mkdir($upload_dir, 0755, true)) {
+    echo "<script>alert('Folder upload resep tidak dapat dibuat.'); window.history.back();</script>";
+    exit();
 }
 
 $nama_file_baru = "resep_" . $id_pelanggan . "_" . time() . "_" . bin2hex(random_bytes(4)) . "." . $ext;
@@ -67,7 +69,7 @@ mysqli_stmt_bind_param($stmt, "iss", $id_pelanggan, $alamat_pengiriman, $nama_fi
 
 if (mysqli_stmt_execute($stmt)) {
     $id_pesanan = mysqli_insert_id($conn);
-    header("Location: detail_pesanan.php?id=" . $id_pesanan);
+    header("Location: ../detail_pesanan.php?id=" . $id_pesanan);
     exit();
 } else {
     @unlink($tujuan_upload); // Hapus file jika query gagal

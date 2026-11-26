@@ -1,6 +1,6 @@
 <?php
 session_start();
-include __DIR__ . "/../../config/connection.php";
+include __DIR__ . "/../../config/connect.php";
 
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
