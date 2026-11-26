@@ -8,7 +8,7 @@ class BayarError extends Exception {}
 
 $id_pelanggan = $_SESSION['id'] ?? "";
 if (empty($id_pelanggan) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../user.php");
+    header("Location: ../index.php");
     exit();
 }
 

@@ -49,7 +49,7 @@ if (isset($_POST['registrasi'])) {
         $_SESSION['role']   = "pelanggan";
         $_SESSION['status'] = "Login";
 
-        header("Location: ../../dashboard/user/user.php");
+        header("Location: ../../dashboard/user/index.php");
         exit();
     } else {
         mysqli_stmt_close($stmt_insert);

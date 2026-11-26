@@ -10,7 +10,7 @@ if (empty($id_pelanggan)) {
 
 $id_pesanan = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 if ($id_pesanan <= 0) {
-    header("Location: user.php");
+    header("Location: index.php");
     exit();
 }
 
@@ -21,7 +21,7 @@ mysqli_stmt_execute($stmt);
 $pesanan = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt));
 
 if (!$pesanan) {
-    echo "<script>alert('Data pesanan tidak ditemukan!'); window.location.href='user.php';</script>";
+    echo "<script>alert('Data pesanan tidak ditemukan!'); window.location.href='index.php';</script>";
     exit();
 }
 
@@ -65,10 +65,10 @@ $is_resep = !empty($pesanan['resep_obat']);
 <body class="bg-light">
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand" href="user.php">
+            <a class="navbar-brand" href="index.php">
                 <h3 class="fw-bold text-white mb-0"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</h3>
             </a>
-            <a href="user.php" class="btn btn-outline-light btn-sm fw-semibold">
+            <a href="index.php" class="btn btn-outline-light btn-sm fw-semibold">
                 <i class="bi bi-house-door me-1"></i> Beranda
             </a>
         </div>
@@ -169,7 +169,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                             Resep Anda sedang diperiksa oleh apoteker kami. Setelah disetujui, rincian harga dan kode pembayaran QRIS akan muncul di halaman ini.
                         </p>
                         <div class="d-grid gap-2 mt-2">
-                            <a href="user.php" class="btn btn-primary fw-semibold">Kembali ke Dashboard</a>
+                            <a href="index.php" class="btn btn-primary fw-semibold">Kembali ke Dashboard</a>
                             <form action="proses/batal_pesanan.php" method="POST" onsubmit="return confirm('Yakin ingin membatalkan pengajuan resep ini?')">
                                 <input type="hidden" name="id_pesanan" value="<?= $id_pesanan ?>">
                                 <button type="submit" class="btn btn-outline-danger w-100">Batalkan Pengajuan</button>
@@ -223,7 +223,7 @@ $is_resep = !empty($pesanan['resep_obat']);
                         <p class="text-muted small">
                             Terima kasih. Pembayaran sebesar <strong>Rp <?= number_format($pesanan['total_harga'], 0, ',', '.') ?></strong> telah diterima dan pesanan Anda segera diproses untuk pengiriman.
                         </p>
-                        <a href="user.php" class="btn btn-primary fw-semibold">Kembali ke Beranda</a>
+                        <a href="index.php" class="btn btn-primary fw-semibold">Kembali ke Beranda</a>
                     </div>
 
                 <?php }elseif ($pesanan['status'] === 'ditolak'){ ?>

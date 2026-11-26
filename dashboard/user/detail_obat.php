@@ -85,7 +85,7 @@ if (!$obat) {
             const form = document.createElement('form');
             form.method = 'POST';
             if(key == 'fromUser'){
-                form.action = 'user.php';
+                form.action = 'index.php';
             }else if(key == 'fromDaftar'){
                 form.action = 'daftar_obat.php';
             }else{

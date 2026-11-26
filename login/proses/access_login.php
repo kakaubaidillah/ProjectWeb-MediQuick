@@ -54,7 +54,7 @@ if (isset($_POST['login'])) {
             $_SESSION['role']   = "pelanggan";
             $_SESSION['status'] = "Login";
 
-            header("Location: ../../dashboard/user/user.php");
+            header("Location: ../../dashboard/user/index.php");
             exit();
         } else {
             header("Location: ../login.php?pesan=failed");

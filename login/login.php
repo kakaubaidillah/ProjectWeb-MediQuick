@@ -6,7 +6,7 @@ if(isset($_SESSION['id'])) {
         header("location: ../dashboard/apoteker/dashboard_apoteker.php");
         exit();
     } else {
-        header("location: ../dashboard/user/user.php");
+        header("location: ../dashboard/user/index.php");
         exit();
     }
 }

@@ -104,7 +104,7 @@ if($edit_id > 0){
 <body>
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand" href="user.php">
+            <a class="navbar-brand" href="index.php">
                 <h3 class="fw-bold text-white mb-0"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</h3>
             </a>
 
@@ -127,7 +127,7 @@ if($edit_id > 0){
                 <div class="offcanvas-body">
                     <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                         <li class="nav-item">
-                            <a class="nav-link" href="user.php">Beranda</a>
+                            <a class="nav-link" href="index.php">Beranda</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" href="#">Pesan Obat</a>
@@ -158,7 +158,7 @@ if($edit_id > 0){
                         <i class="bi bi-file-earmark-medical me-1"></i> Beli dengan Resep Dokter
                     </button>
                 <?php } ?>
-                <a href="<?= $edit_id > 0 ? 'detail_pesanan.php?id=' . $edit_id : 'user.php' ?>" class="btn btn-outline-secondary fw-semibold">
+                <a href="<?= $edit_id > 0 ? 'detail_pesanan.php?id=' . $edit_id : 'index.php' ?>" class="btn btn-outline-secondary fw-semibold">
                     <i class="bi bi-arrow-left me-1"></i> Kembali
                 </a>
             </div>

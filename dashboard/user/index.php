@@ -84,7 +84,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
 <body>
     <nav class="navbar" style="background-color: #2C5EAD;">
         <div class="container">
-            <a class="navbar-brand fw-bold text-white" href="user.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
+            <a class="navbar-brand fw-bold text-white" href="index.php"><img src="../../asset/img/logo.png" alt="logo" width="40" height="40">MediQuick</a>
 
          <!-- Hamburger Menu -->
          <button class="navbar-toggler"
@@ -106,7 +106,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
             <div class="offcanvas-body">
                 <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
                     <li class="nav-item">
-                        <a class="nav-link active" href="user.php">Beranda</a>
+                        <a class="nav-link active" href="index.php">Beranda</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="beli_obat.php">Pesan Obat</a>
