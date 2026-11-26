@@ -178,7 +178,7 @@ $jumlah_obat = $data_obat ? mysqli_num_rows($data_obat) : 0;
                         <button type="submit" class="obat-card-button">
                             <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
                                 <?php if (!empty($obat['gambar_obat'])){ ?>
-                                    <img src="../../asset/uploads/<?= htmlspecialchars($obat['gambar_obat']) ?>"
+                                    <img src="../../asset/uploads/obat/<?= htmlspecialchars($obat['gambar_obat']) ?>"
                                          alt="<?= htmlspecialchars($obat['nama_obat']) ?>"
                                          class="img-fluid mb-2"
                                          style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">

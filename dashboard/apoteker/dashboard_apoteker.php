@@ -117,28 +117,32 @@ $query_antrean = mysqli_stmt_get_result($stmt_antrean);
             <div class="row g-3 mb-3">
                 <!-- Pesanan Selesai -->
                 <div class="col-12 col-lg-6">
-                    <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Pesanan Selesai</p>
-                                <h3 class="fw-bold mb-0"><?= $total_selesai ?></h3>
+                    <a href="riwayat_pesanan.php" style="text-decoration: none;">
+                        <div class="card p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Pesanan Selesai</p>
+                                    <h3 class="fw-bold mb-0"><?= $total_selesai ?></h3>
+                                </div>
+                                <i class="bi bi bi-check2-circle fs-1" style="color: #4fb0f0;"></i>
                             </div>
-                            <i class="bi bi bi-check2-circle fs-1" style="color: #4fb0f0;"></i>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Jenis Obat Tersedia -->
                 <div class="col-12 col-lg-6">
-                    <div class="card p-3 h-100">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Total Jenis Obat</p>
-                                <h3 class="fw-bold mb-0"><?= $total_obat ?></h3>
+                    <a href="inventory.php" style="text-decoration: none;">
+                        <div class="card p-3 h-100">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <p class="text-muted mb-1 fw-medium" style="font-size: 1rem;">Total Jenis Obat</p>
+                                    <h3 class="fw-bold mb-0"><?= $total_obat ?></h3>
+                                </div>
+                                <i class="bi bi-capsule fs-1" style="color: #4fb0f0;"></i>
                             </div>
-                            <i class="bi bi-capsule fs-1" style="color: #4fb0f0;"></i>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>

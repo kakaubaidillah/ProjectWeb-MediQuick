@@ -232,10 +232,10 @@ $data_obat = mysqli_query($conn, $sql_obat);
                         <button type="submit" class="obat-card-button">
                             <div class="description-box" onmouseover="hoverOn(this)" onmouseout="hoverOff(this)">
                                 <?php if(!empty($obat['gambar_obat'])) {?>
-                                <img src="../../asset/uploads/<?= $obat['gambar_obat']; ?>" 
-                                    alt="Gambar Obat" 
-                                    class="img-fluid" 
-                                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                                    <img src="../../asset/uploads/obat/<?= htmlspecialchars($obat['gambar_obat']) ?>" 
+                                        alt="Gambar Obat" 
+                                        class="img-fluid" 
+                                        style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
                                 <?php } ?>
                                 <h5><?= $obat['nama_obat']; ?></h5>
                             </div>

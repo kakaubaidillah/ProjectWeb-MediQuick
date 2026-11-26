@@ -45,7 +45,7 @@ if (!$obat) {
         <div class="row">
             <div class="col-3 mb-4">
                 <?php if(!empty($obat['gambar_obat'])) {?>
-                    <img src="../../asset/uploads/<?= $obat['gambar_obat'] ?>" alt="image" style="width: -webkit-fill-available;">
+                    <img src="../../asset/uploads/obat/<?= $obat['gambar_obat'] ?>" alt="image" style="width: -webkit-fill-available;">
                 <?php } ?>
             </div>
             <div class="col">
