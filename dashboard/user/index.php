@@ -151,7 +151,7 @@ $data_obat = mysqli_query($conn, $sql_obat);
                                     <?php if (!empty($id)) {?>
                                         <a href="beli_obat.php" class="btn btn-warning btn-lg fw-bold text-dark">Buat Pesanan</a>
                                     <?php }else{ ?>
-                                        <a href="../../login/regist.php" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
+                                        <a href="../../login/registrasi.php" class="btn btn-warning btn-lg fw-bold text-dark">Daftar Sekarang</a>
                                         <a href="../../login/login.php" class="btn btn-outline-light btn-lg">Masuk Akun</a>
                                     <?php } ?>
                                 </div>
